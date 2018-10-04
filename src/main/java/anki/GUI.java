@@ -88,7 +88,7 @@ public class GUI implements KeyListener {
                         case CONTROL:
                             //connectCars.gs.sendMessage(new SetSpeedMessage(currentSpeed, 2000));
                             //lights++;
-                            /*if(lights){
+                            if(lights){
                                 lc = new LightsPatternMessage.LightConfig(LightsPatternMessage.LightChannel.TAIL, LightsPatternMessage.LightEffect.THROB, 0, 0, 0);
                                 lpm = new LightsPatternMessage();
                                 lights = false;
@@ -97,16 +97,8 @@ public class GUI implements KeyListener {
                                 lc = new LightsPatternMessage.LightConfig(LightsPatternMessage.LightChannel.TAIL, LightsPatternMessage.LightEffect.STROBE, 0, 0, 0);
                                 lpm = new LightsPatternMessage();
                                 lights = true;
-                            }*/
-                            try {
-                                for (int i = 0; i < 1000; i++) {
-                                    connectCars.gs.sendMessage(new TurnMessage(180, i));
-                                    System.out.println(i);
-                                    Thread.sleep(100);
-                                }
-                            }catch (Exception exception1){
-
                             }
+                            
                             /*switch (lights) {
                                 case 0:
                                     lc = new LightsPatternMessage.LightConfig(LightsPatternMessage.LightChannel.TAIL, LightsPatternMessage.LightEffect.STEADY, 0, 0, 0);
