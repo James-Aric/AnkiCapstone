@@ -9,14 +9,22 @@ buildscript {
 }
 
 apply plugin: 'java'
+apply plugin: 'application'
 apply plugin: 'com.moowork.node'
+mainClassName = 'edu.oswego.cs.CPSLab.anki.Test'
 
 repositories {
-  jcenter()
+    jcenter()
+    mavenCentral()
+    maven{ url "https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket"}
+
 }
 
 dependencies {
-  compile 'org.reflections:reflections:0.9.10'
+    compile 'org.reflections:reflections:0.9.10'
+    // https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
+    compile group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.3.9'
+
 }
 
 node {
@@ -33,6 +41,11 @@ task fatJar(type: Jar) {
     baseName = project.name + '-all'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
+}
+
+task server(type: NodeTask) {
+    script = file('src/main/nodejs/server.js')
+    ignoreExitValue = true
 }
 
 processResources.dependsOn(['npmInstall'])

@@ -10,7 +10,7 @@ public class RoadmapScanner {
   private Vehicle vehicle;
   private Roadmap roadmap;
   
-  private LocalizationPositionUpdateMessage lastPosition;
+  public LocalizationPositionUpdateMessage lastPosition;
   
   public RoadmapScanner(Vehicle vehicle) {
     this.vehicle = vehicle;
@@ -48,7 +48,7 @@ public class RoadmapScanner {
 	  this.lastPosition = null;
   }
 
-  private void handlePositionUpdate(LocalizationPositionUpdateMessage message) {
+  public void handlePositionUpdate(LocalizationPositionUpdateMessage message) {
     lastPosition = message;
   }
 
@@ -62,6 +62,7 @@ public class RoadmapScanner {
       
       if (roadmap.isComplete()) {
         this.stopScanning();
+        System.out.println("STOPPING CAUSE I'M RETARDED LELELELELELE");
       }
     }
   }

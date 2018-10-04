@@ -52,9 +52,11 @@ public class AnkiConnector {
   
   public synchronized List<Vehicle> findVehicles() {
     writer.println("SCAN");
+    System.out.println("SCANNING");
     List<Vehicle> foundVehicles = new ArrayList<>();
     boolean expectingResponse = true;
-    while (expectingResponse)
+    long start = System.currentTimeMillis();
+    while (expectingResponse && System.currentTimeMillis() - start < 5000)
     {
       String response = reader.waitFor("SCAN;");
       if (response.equals("SCAN;COMPLETED")) {
@@ -62,12 +64,14 @@ public class AnkiConnector {
       }
       else {
         String[] parts = response.split(";");
-        
-        String address = parts[1];
-        String manufacturerData = parts[2];
-        String localName = parts[3];
-        
-        foundVehicles.add(new Vehicle(this, address, manufacturerData, localName));
+
+        if(parts.length != 2) {
+          String address = parts[1];
+          String manufacturerData = parts[2];
+          String localName = parts[3];
+
+          foundVehicles.add(new Vehicle(this, address, manufacturerData, localName));
+        }
       }
     }
     return foundVehicles;
@@ -76,11 +80,13 @@ public class AnkiConnector {
   synchronized void connect(Vehicle vehicle) throws InterruptedException {
     writer.println("CONNECT;"+vehicle.getAddress());
     String response = reader.waitFor("CONNECT;");
-    
+
+/*  commented out because it caused BT connections to fail every other run  
     if (response.equals("CONNECT;ERROR")) {
       throw new RuntimeException("connect failed");
     }
-    
+  */
+
     NotificationListener carsNotificationListener = (line) -> {
         if (line.startsWith(vehicle.getAddress())) {
           String messageString = line.replaceFirst(vehicle.getAddress()+";", "");

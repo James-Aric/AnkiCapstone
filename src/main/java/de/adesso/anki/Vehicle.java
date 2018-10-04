@@ -5,7 +5,9 @@ import java.time.LocalTime;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
+import de.adesso.anki.messages.LocalizationPositionUpdateMessage;
 import de.adesso.anki.messages.Message;
+import de.adesso.anki.messages.OffsetFromRoadCenterUpdateMessage;
 
 // TODO: Manage connection status and fail gracefully if disconnected
 
@@ -20,9 +22,12 @@ public class Vehicle {
   private AdvertisementData advertisement;
   
   private AnkiConnector anki;
+  float offsetFromCenter;
   
   private Multimap<Class<? extends Message>, MessageListener> listeners;
   private MessageListener defaultListener;
+  private MessageListener transitionListener;
+  //private MessageListener<Class<? extends LocalizationPositionUpdateMessage> localPositionUpdate;
   
   public String getAddress() {
     return address;
@@ -65,7 +70,13 @@ public class Vehicle {
     }
     
     defaultListener = (message) -> fireMessageReceived(message);
+    transitionListener = (message) -> fireMessageReceived(message);
     anki.addMessageListener(this, defaultListener);
+    offsetFromCenter = 0;
+    //anki.addMessageListener(this, transitionListener);
+    //transitionListener = (message) -> fireMessageReceived(message);
+    //addMessageListener(LocalizationPositionUpdateMessage.class, transitionListener);
+    //anki.addMessageListener(this, MessageListener<LocalizationPositionUpdateMessage> );
   }
   
   public void disconnect() {
@@ -105,6 +116,15 @@ public class Vehicle {
         l.messageReceived(message);
       }
     }
+    /*if(message != null && message.getClass() == LocalizationPositionUpdateMessage.class){
+      //System.out.println(message.toString());
+    }
+    //else if(message != null && message.getClass() == OffsetFromRoadCenterUpdateMessage.class){
+    //  System.out.println(message.toString());
+    //}
+    else if(message != null){
+      System.out.println(message.toString());
+    }*/
   }
   
   public Vehicle(AnkiConnector anki, String address, String manufacturerData, String localName) {
@@ -134,5 +154,9 @@ public class Vehicle {
     	return ((Vehicle) obj).getAddress().equals(this.getAddress());
     }
     return false;
+  }
+
+  public float getOffsetFromCenter(){
+    return offsetFromCenter;
   }
 }
