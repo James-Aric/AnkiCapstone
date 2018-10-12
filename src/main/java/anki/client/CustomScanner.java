@@ -1,4 +1,4 @@
-package anki;
+package anki.client;
 
 //import com.google.gson.Gson;
 import org.json.*;
@@ -64,6 +64,16 @@ public class CustomScanner extends RoadmapScanner {
         vehicle.removeMessageListener(LocalizationTransitionUpdateMessage.class, transUpdate);
         vehicle.removeMessageListener(LocalizationPositionUpdateMessage.class, posUpdate);
         vehicle.sendMessage(new SetSpeedMessage(0, 12500));
+
+        /*JSONObject object = new JSONObject();
+        JSONObject data = new JSONObject();
+
+        object.put("event", "roadmap");
+        data.put("map", test());
+        object.put("data", data);
+
+        SocketController.getClient().send(object.toString());*/
+
     }
 
     public JSONArray test(){

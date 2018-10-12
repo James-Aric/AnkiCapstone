@@ -1,4 +1,4 @@
-package anki;
+package anki.client;
 
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import de.adesso.anki.AnkiConnector;

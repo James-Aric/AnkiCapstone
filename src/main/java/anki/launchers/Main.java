@@ -1,4 +1,4 @@
-package anki;
+package anki.launchers;
 
 
 import javafx.application.Application;
@@ -15,7 +15,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 
         primaryStage.setTitle("Hello World");
-        Parent root = FXMLLoader.load(getClass().getResource("../../resources/sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("../../resources/client.fxml"));
         Scene scene = new Scene(root, 250, 200);
         scene.setFill(Paint.valueOf("#353b48"));
         primaryStage.setScene(scene);

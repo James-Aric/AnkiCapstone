@@ -1,4 +1,4 @@
-package anki;
+package anki.client;
 
 import de.adesso.anki.Vehicle;
 import de.adesso.anki.roadmap.roadpieces.Roadpiece;
@@ -20,5 +20,13 @@ public class User {
 
     public void setPosition(Roadpiece position){
         this.position = position;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public Vehicle getVehicle(){
+        return vehicle;
     }
 }

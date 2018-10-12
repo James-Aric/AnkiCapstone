@@ -1,4 +1,4 @@
-package anki;
+package anki.client;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONException;
@@ -8,7 +8,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class SocketController {
-    WebSocketClient client;
+    public static WebSocketClient client;
 
     String username, vehicle;
 
@@ -19,6 +19,10 @@ public class SocketController {
 
     JSONObject object;
     JSONObject data;
+
+    public static WebSocketClient getClient(){
+        return client;
+    }
 
     public void connectSocket() throws URISyntaxException {
         try{

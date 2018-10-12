@@ -1,5 +1,6 @@
-package anki;
+package anki.server;
 
+import anki.client.User;
 import de.adesso.anki.Vehicle;
 import de.adesso.anki.roadmap.Roadmap;
 import de.adesso.anki.roadmap.roadpieces.Roadpiece;
@@ -63,7 +64,7 @@ public class ServerController {
                     case "locationUpdate":
                         String userPosition = data.getString("username");
                         for(User u: users){
-                            if(u.name.equals(userPosition)){
+                            if(u.getName().equals(userPosition)){
                                 u.setPosition((Roadpiece)data.get("position"));
                             }
                         }
@@ -88,8 +89,8 @@ public class ServerController {
 
     public void removePlayer(String name){
         for(int i = 0; i < 4; i++){
-            if(users[i].name.equals(name)){
-                users[i].vehicle.disconnect();
+            if(users[i].getName().equals(name)){
+                users[i].getVehicle().disconnect();
                 users[i] = null;
             }
         }

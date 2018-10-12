@@ -1,26 +1,19 @@
-package anki;
+package anki.client;
 
 import de.adesso.anki.MessageListener;
-import de.adesso.anki.RoadmapScanner;
 import de.adesso.anki.messages.*;
-import de.adesso.anki.roadmap.Position;
 import de.adesso.anki.roadmap.Roadmap;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import javax.swing.*;
@@ -28,11 +21,7 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import java.io.IOException;
 import java.net.ConnectException;
-import java.net.URL;
-import java.sql.SQLOutput;
-import java.util.Scanner;
 
 public class GUI implements KeyListener {
     JTextField typingArea = new JTextField(20);
@@ -48,6 +37,8 @@ public class GUI implements KeyListener {
     private Scene scene = null;
     //private int lights;
     private boolean lights;
+
+    private String user;
 
     @FXML
     private GridPane grid;
@@ -77,10 +68,10 @@ public class GUI implements KeyListener {
 
     Roadmap currentMap;
 
-    public GUI() throws IOException{
+    public GUI(){
     }
 
-    public void connect(ActionEvent event) throws IOException, InterruptedException{
+    public void connect(ActionEvent event){
         speedTest.setText("500");
         Node source = (Node) event.getSource();
         scene = source.getScene();
@@ -149,21 +140,23 @@ public class GUI implements KeyListener {
                             break;
                         //right
                         case RIGHT:
-                            connectCars.gs.sendMessage(new SetOffsetFromRoadCenterMessage(0));
-                            connectCars.gs.sendMessage(new ChangeLaneMessage(23, currentSpeed, 2000));
+                            /*connectCars.gs.sendMessage(new SetOffsetFromRoadCenterMessage(0));
+                            connectCars.gs.sendMessage(new ChangeLaneMessage(23, currentSpeed, 2000));*/
+                            connectCars.gs.sendMessage(new TurnMessage(1, 0));
                             break;
 
                         //right
                         case LEFT:
-                            connectCars.gs.sendMessage(new SetOffsetFromRoadCenterMessage(0));
-                            connectCars.gs.sendMessage(new ChangeLaneMessage(-23, currentSpeed, 2000));
+                            /*connectCars.gs.sendMessage(new SetOffsetFromRoadCenterMessage(0));
+                            connectCars.gs.sendMessage(new ChangeLaneMessage(-23, currentSpeed, 2000));*/
+                            connectCars.gs.sendMessage(new TurnMessage(2, 0));
                             break;
                         case D:
                             connectCars.disconnect();
                             break;
 
-                        case M:
-                            connectCars.gs.sendMessage(new TurnMessage(180, 1));
+                        case SHIFT:
+                            connectCars.gs.sendMessage(new TurnMessage(3, 0));
                             break;
                     }
                 }
@@ -199,6 +192,13 @@ public class GUI implements KeyListener {
                 speedTest.setText("SPEED: " + message.getSpeed());
                 pieceID.setText("ROAD ID: " + message.getRoadPieceId());
                 offset.setText("OFFSET: " + message.getOffsetFromRoadCenter());
+                /*JSONObject object = new JSONObject();
+                JSONObject data = new JSONObject();
+                object.put("event", "transition");
+                data.put("user", user);
+                data.put("message", message.toString());
+                object.put("data", data);
+                SocketController.getClient().send(object.toString());*/
             }
         });
     }
@@ -208,6 +208,13 @@ public class GUI implements KeyListener {
             @Override
             public void run() {
                 drivingDirection.setText("DIRECTION: " + message.getDrivingDirection());
+                /*JSONObject object = new JSONObject();
+                JSONObject data = new JSONObject();
+                object.put("event", "transition");
+                data.put("user", user);
+                data.put("message", message.toString());
+                object.put("data", data);
+                SocketController.getClient().send(object.toString());*/
             }
         });
     }
