@@ -8,7 +8,7 @@ import de.adesso.anki.roadmap.Roadmap;
 public class RoadmapScanner {
 
   private Vehicle vehicle;
-  private Roadmap roadmap;
+  protected Roadmap roadmap;
   
   public LocalizationPositionUpdateMessage lastPosition;
   

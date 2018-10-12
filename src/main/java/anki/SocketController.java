@@ -1,35 +1,65 @@
 package anki;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 public class SocketController {
     WebSocketClient client;
 
-    /*try{}
+    String username, vehicle;
 
-    public void connectSocket(){
-        client = new WebSocketClient(new URI("ws://localhost:3000")) {
-            @Override
-            public void onOpen(ServerHandshake serverHandshake) {
+    public SocketController(String username, String vehicle){
+        this.username = username;
+        this.vehicle = vehicle;
+    }
 
-            }
+    JSONObject object;
+    JSONObject data;
 
-            @Override
-            public void onMessage(String s) {
+    public void connectSocket() throws URISyntaxException {
+        try{
+            object = new JSONObject();
+            client = new WebSocketClient(new URI("ws://localhost:3000")) {
+                @Override
+                public void onOpen(ServerHandshake serverHandshake) {
 
-            }
+                    client.send("Client: " + username);
+                    client.send("Vehicle: " + vehicle);
+                }
 
-            @Override
-            public void onClose(int i, String s, boolean b) {
+                @Override
+                public void onMessage(String message) {
+                    try{
+                    object = new JSONObject(message);
+                    data = null;
+                    data = object.getJSONObject("data");
+                    switch (object.getString("event")){
+                        case "position":
+                            break;
 
-            }
+                    }
+                    } catch (JSONException ignored) {
 
-            @Override
-            public void onError(Exception e) {
+                    }
 
-            }
+                }
+
+                @Override
+                public void onClose(int i, String s, boolean b) {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+
+                }
+            };
+        }catch (Exception e){
+            System.out.println(e.getLocalizedMessage());
         }
-    }*/
+    }
 }

@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -15,8 +16,8 @@ public class Main extends Application {
 
         primaryStage.setTitle("Hello World");
         Parent root = FXMLLoader.load(getClass().getResource("../../resources/sample.fxml"));
-        Scene scene = new Scene(root, 500, 500);
-
+        Scene scene = new Scene(root, 250, 200);
+        scene.setFill(Paint.valueOf("#353b48"));
         primaryStage.setScene(scene);
 
         primaryStage.show();
