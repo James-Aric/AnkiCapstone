@@ -1,4 +1,4 @@
-package anki.client;
+package anki;
 
 import de.adesso.anki.Vehicle;
 import de.adesso.anki.roadmap.roadpieces.Roadpiece;

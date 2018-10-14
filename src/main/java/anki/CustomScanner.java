@@ -1,4 +1,4 @@
-package anki.client;
+package anki;
 
 //import com.google.gson.Gson;
 import org.json.*;

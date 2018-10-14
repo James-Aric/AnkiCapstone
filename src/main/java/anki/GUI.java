@@ -1,4 +1,4 @@
-package anki.client;
+package anki;
 
 import de.adesso.anki.MessageListener;
 import de.adesso.anki.messages.*;
@@ -15,6 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import org.json.JSONObject;
 
 import javax.swing.*;
 
@@ -22,6 +23,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import java.net.ConnectException;
+import java.net.URISyntaxException;
 
 public class GUI implements KeyListener {
     JTextField typingArea = new JTextField(20);
@@ -65,26 +67,33 @@ public class GUI implements KeyListener {
     LightsPatternMessage lpm;
 
 
-
+    SocketController controller;
     Roadmap currentMap;
 
     public GUI(){
     }
 
-    public void connect(ActionEvent event){
-        speedTest.setText("500");
-        Node source = (Node) event.getSource();
-        scene = source.getScene();
-        stage = (Stage) scene.getWindow();
-        //setMap();
-        //updateMap();
-        System.out.println("SCENE SET");
-        System.out.println("CONNECTING INITIATED--------------------------");
-        positionListener = (message) -> positionUpdate(message);
-        transitionListener = (message) -> transitionUpdate(message);
+    public void connect(ActionEvent event) throws URISyntaxException {
+        try {
+            speedTest.setText("500");
+            Node source = (Node) event.getSource();
+            scene = source.getScene();
+            stage = (Stage) scene.getWindow();
+            //setMap();
+            //updateMap();
+            System.out.println("SCENE SET");
+            System.out.println("CONNECTING INITIATED--------------------------");
+            positionListener = (message) -> positionUpdate(message);
+            transitionListener = (message) -> transitionUpdate(message);
+            controller = new SocketController("test", "Groundshock");
+
+        }
+        catch (NullPointerException ex){
+
+        }
         try {
             connectCars.connect();
-            CustomScanner scanner = new CustomScanner(connectCars.gs);
+            /*CustomScanner scanner = new CustomScanner(connectCars.gs);
 
             scanner.startScanning();
             while (!scanner.isComplete()) {
@@ -100,11 +109,12 @@ public class GUI implements KeyListener {
             System.out.println(scanner.getIdList());
             scanner.test();
             System.out.println("TEST2");
-            scanner.reset();
+            scanner.reset();*/
             connectCars.gs.addMessageListener(LocalizationPositionUpdateMessage.class, positionListener);
             connectCars.gs.addMessageListener(LocalizationTransitionUpdateMessage.class, transitionListener);
 
             lights = false;
+            controller.connectSocket();
             scene.addEventHandler(javafx.scene.input.KeyEvent.KEY_PRESSED, new EventHandler<javafx.scene.input.KeyEvent>() {
                 @Override
                 public void handle(javafx.scene.input.KeyEvent e) {
@@ -192,13 +202,14 @@ public class GUI implements KeyListener {
                 speedTest.setText("SPEED: " + message.getSpeed());
                 pieceID.setText("ROAD ID: " + message.getRoadPieceId());
                 offset.setText("OFFSET: " + message.getOffsetFromRoadCenter());
-                /*JSONObject object = new JSONObject();
+                JSONObject object = new JSONObject();
                 JSONObject data = new JSONObject();
-                object.put("event", "transition");
-                data.put("user", user);
+                object.put("event", "locationUpdate");
+                data.put("username", user);
                 data.put("message", message.toString());
                 object.put("data", data);
-                SocketController.getClient().send(object.toString());*/
+                System.out.println(object.toString());
+                SocketController.getClient().send(object.toString());
             }
         });
     }
@@ -211,7 +222,7 @@ public class GUI implements KeyListener {
                 /*JSONObject object = new JSONObject();
                 JSONObject data = new JSONObject();
                 object.put("event", "transition");
-                data.put("user", user);
+                data.put("username", user);
                 data.put("message", message.toString());
                 object.put("data", data);
                 SocketController.getClient().send(object.toString());*/
