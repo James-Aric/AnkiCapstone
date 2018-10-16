@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -44,6 +45,9 @@ public class GUI implements KeyListener {
 
     @FXML
     private GridPane grid;
+
+    @FXML
+    private TextField input;
 
     @FXML
     Button connect;
@@ -85,7 +89,7 @@ public class GUI implements KeyListener {
             System.out.println("CONNECTING INITIATED--------------------------");
             positionListener = (message) -> positionUpdate(message);
             transitionListener = (message) -> transitionUpdate(message);
-            controller = new SocketController("test", "Groundshock");
+            user = input.getText();
 
         }
         catch (NullPointerException ex){
@@ -93,7 +97,8 @@ public class GUI implements KeyListener {
         }
         try {
             connectCars.connect();
-            /*CustomScanner scanner = new CustomScanner(connectCars.gs);
+            controller = new SocketController(user, connectCars.gs);
+            CustomScanner scanner = new CustomScanner(connectCars.gs);
 
             scanner.startScanning();
             while (!scanner.isComplete()) {
@@ -109,7 +114,7 @@ public class GUI implements KeyListener {
             System.out.println(scanner.getIdList());
             scanner.test();
             System.out.println("TEST2");
-            scanner.reset();*/
+            scanner.reset();
             connectCars.gs.addMessageListener(LocalizationPositionUpdateMessage.class, positionListener);
             connectCars.gs.addMessageListener(LocalizationTransitionUpdateMessage.class, transitionListener);
 
@@ -206,7 +211,10 @@ public class GUI implements KeyListener {
                 JSONObject data = new JSONObject();
                 object.put("event", "locationUpdate");
                 data.put("username", user);
-                data.put("message", message.toString());
+                data.put("locationId", message.getLocationId());
+                data.put("roadId", message.getRoadPieceId());
+                data.put("offset", message.getOffsetFromRoadCenter());
+                data.put("speed", message.getSpeed());
                 object.put("data", data);
                 System.out.println(object.toString());
                 SocketController.getClient().send(object.toString());

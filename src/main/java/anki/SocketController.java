@@ -1,4 +1,5 @@
 package anki;
+import de.adesso.anki.Vehicle;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONException;
@@ -10,18 +11,23 @@ import java.net.URISyntaxException;
 
 public class SocketController {
 
-    static String username, vehicle;
+    static String username;
+    static Vehicle vehicle;
     static WebSocketClient client;
 
-    public SocketController(String username, String vehicle) throws URISyntaxException{
+    public SocketController(String username, Vehicle vehicle) throws URISyntaxException{
         this.username = username;
         this.vehicle = vehicle;
         client = new WebSocketClient(new URI("ws://localhost:5020")) {
             @Override
             public void onOpen(ServerHandshake serverHandshake) {
-
-                client.send("Client: " + username);
-                client.send("Vehicle: " + vehicle);
+                object = new JSONObject();
+                data = new JSONObject();
+                data.put("username", username);
+                data.put("vehicle", vehicle.getAddress());
+                object.put("event", "connect");
+                object.put("data", data);
+                client.send(object.toString());
             }
 
             @Override

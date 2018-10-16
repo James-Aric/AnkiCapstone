@@ -7,11 +7,13 @@
 <?import javafx.scene.layout.RowConstraints?>
 
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.TextField?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="anki.GUI">
 <GridPane fx:id="grid" alignment="center" hgap="1" vgap="1" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
           >
+   <TextField fx:id="input" GridPane.rowIndex="3"/>
    <Button fx:id="connect" onAction="#connect" text="Connect" GridPane.rowIndex="2" />
 
    <Label fx:id="speedTest" text="TEST" GridPane.columnIndex="10" GridPane.rowIndex="1" />

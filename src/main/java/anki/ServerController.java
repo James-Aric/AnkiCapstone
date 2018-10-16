@@ -2,6 +2,8 @@ package anki;
 
 import anki.User;
 import de.adesso.anki.Vehicle;
+import de.adesso.anki.messages.LocalizationPositionUpdateMessage;
+import de.adesso.anki.messages.LocalizationTransitionUpdateMessage;
 import de.adesso.anki.roadmap.Roadmap;
 import de.adesso.anki.roadmap.roadpieces.Roadpiece;
 import org.java_websocket.WebSocket;
@@ -12,6 +14,7 @@ import org.json.JSONObject;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 
 public class ServerController {
     User users[];
@@ -23,11 +26,14 @@ public class ServerController {
     int playerCount;
 
     Roadmap map;
+    List<Roadpiece> listMap;
     InetSocketAddress address;
     WebSocketServer server;
+    String currentUser;
 
     public ServerController() throws UnknownHostException {
         address = new InetSocketAddress(5020);
+        users = new User[4];
         server = new WebSocketServer(address) {
             @Override
             public void onOpen(WebSocket conn, ClientHandshake handshake) {
@@ -50,12 +56,12 @@ public class ServerController {
                     switch (object.getString("event")) {
                         case "connect":
                             String user = data.getString("username");
-                            Vehicle vehicle = (Vehicle) data.get("vehicle");
-                            System.out.println("PLAYER: " + user + " CONNECTED ON VEHICLE " + vehicle.getAddress());
+                            String vehicle = data.getString("vehicle");
+                            System.out.println("PLAYER: " + user + " CONNECTED ON VEHICLE " + vehicle);
                             if (playerCount != 4) {
                                 for (int i = 0; i < 4; i++) {
                                     if (users[i] == null) {
-                                        users[i] = new User(user, vehicle, null, conn);
+                                        users[i] = new User(user, vehicle, -1, conn, null);
                                     }
                                 }
                             } else {
@@ -69,18 +75,34 @@ public class ServerController {
                         case "roadmap":
                             if (map == null) {
                                 map = (Roadmap) data.get("roadmap");
+                                listMap = map.toList();
                             }
                             break;
                         case "locationUpdate":
-                            String userPosition = data.getString("username");
-                            System.out.println(data.get("data").toString());
+                            currentUser = data.getString("username");
+                            System.out.println(data.toString());
                             for (User u : users) {
-                                if (u.getName().equals(userPosition)) {
-                                    u.setPosition((Roadpiece) data.get("position"));
+                                if (u.getName().equals(currentUser)) {
+                                    //LocalizationPositionUpdateMessage positionMessage = (LocalizationPositionUpdateMessage) data.get("message");
+                                    //u.setPosition(positionMessage.getRoadPieceId());*/
+                                    System.out.println("PLAYER: " + object.get("username") + "   AT POSITION: " + data.get("locationId"));
                                 }
                             }
                             break;
-                        case "":
+                        case "transitionUpdate":
+                            //LocalizationTransitionUpdateMessage transitionUpdateMessage = (LocalizationTransitionUpdateMessage) data.get("message");
+                            currentUser = object.getString("username");
+                            for(User u: users){
+                                if(u != null && u.getName().equals(currentUser)){
+                                    u.position++;
+                                    if(u.position == listMap.size()){
+                                        u.position = 0;
+                                    }
+                                    u.setMapPosition(listMap.get(u.position));
+                                    break;
+                                }
+                            }
+                            break;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -109,7 +131,6 @@ public class ServerController {
     public void removePlayer(String name){
         for(int i = 0; i < 4; i++){
             if(users[i].getName().equals(name)){
-                users[i].getVehicle().disconnect();
                 users[i] = null;
             }
         }

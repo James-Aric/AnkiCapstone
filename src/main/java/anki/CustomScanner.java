@@ -61,9 +61,11 @@ public class CustomScanner extends RoadmapScanner {
 
     @Override
     public void stopScanning() {
+
+        vehicle.sendMessage(new SetSpeedMessage(0, 12500));
         vehicle.removeMessageListener(LocalizationTransitionUpdateMessage.class, transUpdate);
         vehicle.removeMessageListener(LocalizationPositionUpdateMessage.class, posUpdate);
-        vehicle.sendMessage(new SetSpeedMessage(0, 12500));
+
 
         /*JSONObject object = new JSONObject();
         JSONObject data = new JSONObject();

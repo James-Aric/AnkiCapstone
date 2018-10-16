@@ -7,18 +7,20 @@ import org.java_websocket.client.WebSocketClient;
 
 public class User {
     String name;
-    Vehicle vehicle;
-    Roadpiece position;
+    String vehicle;
+    int position;
     WebSocket conn;
+    Roadpiece mapPosition;
 
-    public User(String name, Vehicle vehicle, Roadpiece position, WebSocket client){
+    public User(String name, String vehicle, int position, WebSocket client, Roadpiece mapPosition){
         this.name = name;
         this.vehicle = vehicle;
         this.position = position;
         this.conn = client;
+        this.mapPosition = mapPosition;
     }
 
-    public void setPosition(Roadpiece position){
+    public void setPosition(int position){
         this.position = position;
     }
 
@@ -26,7 +28,11 @@ public class User {
         return name;
     }
 
-    public Vehicle getVehicle(){
+    public String getVehicle(){
         return vehicle;
+    }
+
+    public void setMapPosition(Roadpiece r){
+        mapPosition = r;
     }
 }
