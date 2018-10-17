@@ -5,20 +5,30 @@ import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 public class SocketController {
 
+    /*
+
+        CHANGE THIS TO MATCH SERVER IP
+
+     */
+    static String address = "";
+
+
     static String username;
     static Vehicle vehicle;
     static WebSocketClient client;
+    static JSONObject object;
+    static JSONObject data;
+
 
     public SocketController(String username, Vehicle vehicle) throws URISyntaxException{
         this.username = username;
         this.vehicle = vehicle;
-        client = new WebSocketClient(new URI("ws://localhost:5020")) {
+        client = new WebSocketClient(new URI("ws://" + address + ":5020")) {
             @Override
             public void onOpen(ServerHandshake serverHandshake) {
                 object = new JSONObject();
@@ -58,10 +68,6 @@ public class SocketController {
             }
         };
     }
-
-    static JSONObject object;
-    static JSONObject data;
-    static InetSocketAddress address = new InetSocketAddress("localhost", 3000);
 
 
 
