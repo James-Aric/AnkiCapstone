@@ -38,8 +38,9 @@ public class ServerController {
     @FXML
     private Label user1direction;
     @FXML
-    private Label user1location;
-/*
+    private Label user1position;
+
+
     @FXML
     private Label user2;
     @FXML
@@ -71,7 +72,7 @@ public class ServerController {
     @FXML
     Label user4direction;
     @FXML
-    Label user4position;*/
+    Label user4position;
 
     @FXML
     VBox user1box;
@@ -246,13 +247,28 @@ public class ServerController {
 
         return;
     }*/
-    public void newUserData(int location, JSONObject userData){
+    public void newUserData(int location, JSONObject message){
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                System.out.println(userData.get("username").toString());
-                user1.setText(userData.get("username").toString());
-                user1vehicle.setText(userData.get("vehicle").toString());
+                switch(location){
+                    case 0:
+                        user1speed.setText(message.get("username").toString());
+                        user1position.setText(message.get("vehicle").toString());
+                        break;
+                    case 1:
+                        user2speed.setText(message.get("username").toString());
+                        user2position.setText(message.get("vehicle").toString());
+                        break;
+                    case 2:
+                        user3speed.setText(message.get("username").toString());
+                        user3position.setText(message.get("vehicle").toString());
+                        break;
+                    case 3:
+                        user4speed.setText(message.get("username").toString());
+                        user4position.setText(message.get("vehicle").toString());
+                        break;
+                }
             }
         });
     }
@@ -261,9 +277,29 @@ public class ServerController {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                user1speed.setText(message.get("speed").toString());
-                user1location.setText(message.get("position").toString());
-                user1direction.setText(message.get("offset").toString());
+                switch(location){
+                    case 0:
+                        user1speed.setText(message.get("speed").toString());
+                        user1position.setText(message.get("position").toString());
+                        user1direction.setText(message.get("offset").toString());
+                        break;
+                    case 1:
+                        user2speed.setText(message.get("speed").toString());
+                        user2position.setText(message.get("position").toString());
+                        user2direction.setText(message.get("offset").toString());
+                        break;
+                    case 2:
+                        user3speed.setText(message.get("speed").toString());
+                        user3position.setText(message.get("position").toString());
+                        user3direction.setText(message.get("offset").toString());
+                        break;
+                    case 3:
+                        user4speed.setText(message.get("speed").toString());
+                        user4position.setText(message.get("position").toString());
+                        user4direction.setText(message.get("offset").toString());
+                        break;
+                }
+
             }
         });
     }
