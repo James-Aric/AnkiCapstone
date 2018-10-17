@@ -6,18 +6,75 @@ import de.adesso.anki.messages.LocalizationPositionUpdateMessage;
 import de.adesso.anki.messages.LocalizationTransitionUpdateMessage;
 import de.adesso.anki.roadmap.Roadmap;
 import de.adesso.anki.roadmap.roadpieces.Roadpiece;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.fxml.FXML;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.json.JSONObject;
+import javafx.scene.control.Label;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
+
 public class ServerController {
     User users[];
+
+    @FXML
+    AnchorPane anchor;
+
+    //user stat stuff
+    @FXML
+    private Label user1;
+    @FXML
+    private Label user1vehicle;
+    @FXML
+    private Label user1speed;
+    @FXML
+    private Label user1direction;
+    @FXML
+    private Label user1location;
+/*
+    @FXML
+    private Label user2;
+    @FXML
+    private Label user2vehicle;
+    @FXML
+    Label user2speed;
+    @FXML
+    Label user2direction;
+    @FXML
+    Label user2position;
+
+    @FXML
+    Label user3;
+    @FXML
+    Label user3vehicle;
+    @FXML
+    Label user3speed;
+    @FXML
+    Label user3direction;
+    @FXML
+    Label user3position;
+
+    @FXML
+    Label user4;
+    @FXML
+    Label user4vehicle;
+    @FXML
+    Label user4speed;
+    @FXML
+    Label user4direction;
+    @FXML
+    Label user4position;*/
+
+    @FXML
+    VBox user1box;
 
 
     JSONObject object;
@@ -31,14 +88,30 @@ public class ServerController {
     WebSocketServer server;
     String currentUser;
 
+    private InetSocketAddress test = new InetSocketAddress("129.3.169.200", 5020);
+
+    @FXML
+    public void initialize(){
+
+    }
+
     public ServerController() throws UnknownHostException {
         address = new InetSocketAddress(5020);
         users = new User[4];
-        server = new WebSocketServer(address) {
+        //setLabelArrays();
+        launchServer();
+
+    }
+
+
+    public void launchServer(){
+        //user1.setText("test");
+        server = new WebSocketServer(test) {
             @Override
             public void onOpen(WebSocket conn, ClientHandshake handshake) {
                 /*sers = new User[4];*/
                 System.out.println("NEW CONNECTION");
+
             }
 
             @Override
@@ -62,6 +135,7 @@ public class ServerController {
                                 for (int i = 0; i < 4; i++) {
                                     if (users[i] == null) {
                                         users[i] = new User(user, vehicle, -1, conn, null);
+                                        newUserData(i, data);
                                     }
                                 }
                             } else {
@@ -81,17 +155,18 @@ public class ServerController {
                         case "locationUpdate":
                             currentUser = data.getString("username");
                             System.out.println(data.toString());
-                            for (User u : users) {
-                                if (u.getName().equals(currentUser)) {
+                            for (int i = 0; i < 4; i++) {
+                                if (users[i].getName().equals(currentUser)) {
                                     //LocalizationPositionUpdateMessage positionMessage = (LocalizationPositionUpdateMessage) data.get("message");
                                     //u.setPosition(positionMessage.getRoadPieceId());*/
-                                    System.out.println("PLAYER: " + object.get("username") + "   AT POSITION: " + data.get("locationId"));
+                                    System.out.println("PLAYER: " + data.getString("username") + "   AT POSITION: " + data.get("position"));
+                                    setUserData(i, data);
                                 }
                             }
                             break;
                         case "transitionUpdate":
                             //LocalizationTransitionUpdateMessage transitionUpdateMessage = (LocalizationTransitionUpdateMessage) data.get("message");
-                            currentUser = object.getString("username");
+                            /*currentUser = object.getString("username");
                             for(User u: users){
                                 if(u != null && u.getName().equals(currentUser)){
                                     u.position++;
@@ -101,7 +176,7 @@ public class ServerController {
                                     u.setMapPosition(listMap.get(u.position));
                                     break;
                                 }
-                            }
+                            }*/
                             break;
                     }
                 } catch (Exception e) {
@@ -120,9 +195,10 @@ public class ServerController {
 
             }
         };
+        server.start();
+        System.out.println("Server started on " + server.getAddress());
+        //user1.setText("test");
     }
-
-
             //new InetSocketAddress("ws://localhost",3000);
 
 
@@ -135,4 +211,62 @@ public class ServerController {
             }
         }
     }
+
+    /*public void setLabelArrays(){
+
+        user1Labels[0] = user1;
+        user1Labels[1] = user1vehicle;
+        user1Labels[2] = user1speed;
+        user1Labels[3] = user1speed;
+        user1Labels[4] = user1direction;
+
+        user2Labels[0] = user2;
+        user2Labels[1] = user2vehicle;
+        user2Labels[2] = user2speed;
+        user2Labels[3] = user2speed;
+        user2Labels[4] = user2direction;
+
+        user3Labels[0] = user3;
+        user3Labels[1] = user3vehicle;
+        user3Labels[2] = user3speed;
+        user3Labels[3] = user3speed;
+        user3Labels[4] = user3direction;
+
+        user4Labels[0] = user4;
+        user4Labels[1] = user4vehicle;
+        user4Labels[2] = user4speed;
+        user4Labels[3] = user4speed;
+        user4Labels[4] = user4direction;
+
+        labels[0] = user1Labels;
+        labels[1] = user2Labels;
+        labels[2] = user3Labels;
+        labels[3] = user4Labels;
+
+
+        return;
+    }*/
+    public void newUserData(int location, JSONObject userData){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(userData.get("username").toString());
+                user1.setText(userData.get("username").toString());
+                user1vehicle.setText(userData.get("vehicle").toString());
+            }
+        });
+    }
+
+    public void setUserData(int location, JSONObject message){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                user1speed.setText(message.get("speed").toString());
+                user1location.setText(message.get("position").toString());
+                user1direction.setText(message.get("offset").toString());
+            }
+        });
+    }
 }
+
+

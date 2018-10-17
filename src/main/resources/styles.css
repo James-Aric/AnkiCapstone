@@ -1,3 +1,8 @@
 #anchor {
     -fx-background-color: #353b48;
+	-fx-border-color: white;
+	-fx-border-width: 3px 3px 3px 3px
+}
+.label{
+	-fx-text-fill: white;
 }

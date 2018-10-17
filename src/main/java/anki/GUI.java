@@ -26,11 +26,8 @@ import java.awt.event.KeyListener;
 import java.net.ConnectException;
 import java.net.URISyntaxException;
 
+
 public class GUI implements KeyListener {
-    JTextField typingArea = new JTextField(20);
-
-    //Main main = new Main();
-
 
     public Button start, stop;
     //public TextField input;
@@ -42,9 +39,6 @@ public class GUI implements KeyListener {
     private boolean lights;
 
     private String user;
-
-    @FXML
-    private GridPane grid;
 
     @FXML
     private TextField input;
@@ -211,8 +205,8 @@ public class GUI implements KeyListener {
                 JSONObject data = new JSONObject();
                 object.put("event", "locationUpdate");
                 data.put("username", user);
-                data.put("locationId", message.getLocationId());
-                data.put("roadId", message.getRoadPieceId());
+                //data.put("locationId", message.getLocationId());
+                data.put("position", message.getRoadPieceId());
                 data.put("offset", message.getOffsetFromRoadCenter());
                 data.put("speed", message.getSpeed());
                 object.put("data", data);
@@ -238,7 +232,7 @@ public class GUI implements KeyListener {
         });
     }
 
-    public void setMap(){
+    /*public void setMap(){
         views = new ImageView[4];
         for(int i = 0; i < 4; i++){
             views[i] = new ImageView();
@@ -262,6 +256,6 @@ public class GUI implements KeyListener {
             vehicleView.setFitWidth(50);
         }
         grid.add(vehicleView, 2, 10);
-    }
+    }*/
 
 }

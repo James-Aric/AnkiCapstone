@@ -20,11 +20,12 @@ public class Main extends Application {
         primaryStage.setTitle("Hello World");
         URL url = new File("/home/jamearic/Documents/Github/AnkiCapstone/src/main/resources/client.fxml").toURL();
         Parent root = FXMLLoader.load(url);
-        Scene scene = new Scene(root, 250, 200);
+        Scene scene = new Scene(root, 752, 456);
         scene.setFill(Paint.valueOf("#353b48"));
         primaryStage.setScene(scene);
 
         primaryStage.show();
+
     }
 
     public static void main(String[] args) {

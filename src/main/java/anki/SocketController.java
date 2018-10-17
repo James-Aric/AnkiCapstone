@@ -24,7 +24,7 @@ public class SocketController {
                 object = new JSONObject();
                 data = new JSONObject();
                 data.put("username", username);
-                data.put("vehicle", vehicle.getAddress());
+                data.put("vehicle", vehicle.getAdvertisement().getModel().toString());
                 object.put("event", "connect");
                 object.put("data", data);
                 client.send(object.toString());

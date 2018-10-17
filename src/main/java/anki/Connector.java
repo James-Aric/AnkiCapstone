@@ -117,7 +117,7 @@ public class Connector implements MessageListener, NotificationListener {
                 while (iter.hasNext()) {
                     Vehicle v = iter.next();
                     System.out.println(v);
-                    if (v.getAdvertisement().getModel() /*== null) {//*/.equals(Model.NUKE)) {
+                    if (v.getAdvertisement().getModel() /*== null) {//*/.equals(Model.GROUNDSHOCK)) {
                         System.out.println("taking model " + v.getAdvertisement().getModel());
                         gs = v;
                     }

@@ -1,14 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="anki.ServerLauncher"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane fx:id="anchor" prefHeight="644.0" prefWidth="978.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="anki.ServerController">
+   <children>
+      <VBox layoutX="809.0" layoutY="14.0" prefHeight="610.0" prefWidth="153.0">
+         <children>
+            <VBox>
+               <children>
+                  <VBox fx:id="user1box" prefHeight="274.0" prefWidth="184.0">
+                     <children>
+                        <Label fx:id="user1" prefHeight="20.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user1vehicle" prefHeight="45.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user1speed" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user1location" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user1direction" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                     </children>
+                  </VBox>
+                  <VBox fx:id="user2box" prefHeight="274.0" prefWidth="184.0">
+                     <children>
+                        <Label fx:id="user2" prefHeight="20.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user2vehicle" prefHeight="45.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user2speed" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user2location" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user2direction" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                     </children>
+                  </VBox>
+                  <VBox fx:id="user3box" prefHeight="274.0" prefWidth="184.0">
+                     <children>
+                        <Label fx:id="user3" prefHeight="20.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user3vehicle" prefHeight="45.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user3speed" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user3location" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user3direction" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                     </children>
+                  </VBox>
+                  <VBox fx:id="user4box" prefHeight="274.0" prefWidth="184.0">
+                     <children>
+                        <Label fx:id="user4" prefHeight="20.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user4vehicle" prefHeight="45.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user4speed" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user4location" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user4direction" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+      <Separator layoutX="706.0" layoutY="5.0" orientation="VERTICAL" prefHeight="635.0" prefWidth="28.0" />
+      <Separator layoutX="720.0" layoutY="461.0" prefHeight="3.0" prefWidth="258.0" />
+      <Separator layoutX="720.0" layoutY="154.0" prefHeight="3.0" prefWidth="258.0" />
+      <Separator layoutX="720.0" layoutY="303.0" prefHeight="3.0" prefWidth="258.0" />
+      <VBox layoutX="723.0" layoutY="15.0" prefHeight="610.0" prefWidth="80.0">
+         <children>
+            <VBox prefHeight="610.0" prefWidth="90.0">
+               <children>
+                  <VBox prefHeight="274.0" prefWidth="184.0">
+                     <children>
+                        <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="100.0" text="USER:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="45.0" prefWidth="100.0" text="VEHICLE:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="SPEED:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="LOCATION:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="DIRECTION:" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="274.0" prefWidth="184.0">
+                     <children>
+                        <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="100.0" text="USER:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="45.0" prefWidth="100.0" text="VEHICLE:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="SPEED:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="LOCATION:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="DIRECTION:" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="274.0" prefWidth="184.0">
+                     <children>
+                        <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="100.0" text="USER:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="45.0" prefWidth="100.0" text="VEHICLE:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="SPEED:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="LOCATION:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="DIRECTION:" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="274.0" prefWidth="184.0">
+                     <children>
+                        <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="100.0" text="USER:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="45.0" prefWidth="100.0" text="VEHICLE:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="SPEED:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="LOCATION:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="DIRECTION:" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
 </AnchorPane>
