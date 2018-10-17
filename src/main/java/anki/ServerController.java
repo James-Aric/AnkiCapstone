@@ -23,6 +23,18 @@ import java.util.List;
 
 
 public class ServerController {
+
+    /*
+
+        CHANGE THIS TO RUN ON YOUR CURRENT IP
+
+
+     */
+
+    private InetSocketAddress address = new InetSocketAddress("129.3.169.200", 5020);
+
+
+
     User users[];
 
     @FXML
@@ -85,19 +97,15 @@ public class ServerController {
 
     Roadmap map;
     List<Roadpiece> listMap;
-    InetSocketAddress address;
     WebSocketServer server;
     String currentUser;
-
-    private InetSocketAddress test = new InetSocketAddress("129.3.169.200", 5020);
 
     @FXML
     public void initialize(){
 
     }
 
-    public ServerController() throws UnknownHostException {
-        address = new InetSocketAddress(5020);
+    public ServerController() {
         users = new User[4];
         //setLabelArrays();
         launchServer();
@@ -107,7 +115,7 @@ public class ServerController {
 
     public void launchServer(){
         //user1.setText("test");
-        server = new WebSocketServer(test) {
+        server = new WebSocketServer(address) {
             @Override
             public void onOpen(WebSocket conn, ClientHandshake handshake) {
                 /*sers = new User[4];*/
@@ -149,8 +157,9 @@ public class ServerController {
                             break;
                         case "roadmap":
                             if (map == null) {
-                                map = (Roadmap) data.get("roadmap");
-                                listMap = map.toList();
+                                //map = (Roadmap) data.get("map");
+                                //listMap = map.toList();
+                                System.out.println("RECIEVED MAP: " + data.get("map"));
                             }
                             break;
                         case "locationUpdate":

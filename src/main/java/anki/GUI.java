@@ -114,6 +114,8 @@ public class GUI implements KeyListener {
 
             lights = false;
             controller.connectSocket();
+            Thread.sleep(100);
+            scanner.sendMap();
             scene.addEventHandler(javafx.scene.input.KeyEvent.KEY_PRESSED, new EventHandler<javafx.scene.input.KeyEvent>() {
                 @Override
                 public void handle(javafx.scene.input.KeyEvent e) {

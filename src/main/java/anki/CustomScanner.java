@@ -67,6 +67,7 @@ public class CustomScanner extends RoadmapScanner {
         vehicle.removeMessageListener(LocalizationPositionUpdateMessage.class, posUpdate);
 
 
+
         /*JSONObject object = new JSONObject();
         JSONObject data = new JSONObject();
 
@@ -98,6 +99,16 @@ public class CustomScanner extends RoadmapScanner {
             System.out.println(r.getType());
         }
         return idlist;
+    }
+
+
+    public void sendMap(){
+        JSONObject object = new JSONObject();
+        JSONObject data = new JSONObject();
+        object.put("event", "roadmap");
+        data.put("map", getRoadmap());
+        object.put("data", data);
+        SocketController.getClient().send(object.toString());
     }
 
 
