@@ -17,7 +17,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("SKULL");
         URL url = new File("/home/jamearic/Documents/Github/AnkiCapstone/src/main/resources/client.fxml").toURL();
         Parent root = FXMLLoader.load(url);
         Scene scene = new Scene(root, 752, 456);

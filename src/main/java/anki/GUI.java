@@ -101,6 +101,8 @@ public class GUI implements KeyListener {
             scanner.stopScanning();
 
 
+            input.setVisible(false);
+
 
             //currentMap = scanner.getRoadmap();
             System.out.println("TEST1");
@@ -132,7 +134,7 @@ public class GUI implements KeyListener {
                             if (currentSpeed >= 50) {
                                 currentSpeed -= 50;
                             } else {
-                                currentSpeed = 0;
+                                currentSpeed -= 50;
                             }
                             connectCars.gs.sendMessage(new SetSpeedMessage(currentSpeed, 2000));
                             speedTest.setText("SPEED: "+ currentSpeed);
@@ -151,16 +153,16 @@ public class GUI implements KeyListener {
                             break;
                         //right
                         case RIGHT:
-                            /*connectCars.gs.sendMessage(new SetOffsetFromRoadCenterMessage(0));
-                            connectCars.gs.sendMessage(new ChangeLaneMessage(23, currentSpeed, 2000));*/
-                            connectCars.gs.sendMessage(new TurnMessage(1, 0));
+                            connectCars.gs.sendMessage(new SetOffsetFromRoadCenterMessage(0));
+                            connectCars.gs.sendMessage(new ChangeLaneMessage(23, currentSpeed, 2000));
+                            //connectCars.gs.sendMessage(new TurnMessage(1, 0));
                             break;
 
                         //right
                         case LEFT:
-                            /*connectCars.gs.sendMessage(new SetOffsetFromRoadCenterMessage(0));
-                            connectCars.gs.sendMessage(new ChangeLaneMessage(-23, currentSpeed, 2000));*/
-                            connectCars.gs.sendMessage(new TurnMessage(2, 0));
+                            connectCars.gs.sendMessage(new SetOffsetFromRoadCenterMessage(0));
+                            connectCars.gs.sendMessage(new ChangeLaneMessage(-23, currentSpeed, 2000));
+                            //connectCars.gs.sendMessage(new TurnMessage(2, 0));
                             break;
                         case D:
                             connectCars.disconnect();

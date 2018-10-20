@@ -15,7 +15,7 @@ public class SocketController {
         CHANGE THIS TO MATCH SERVER IP
 
      */
-    static String address = "";
+    static String address = "129.3.208.118";
 
 
     static String username;

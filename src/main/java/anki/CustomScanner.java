@@ -77,6 +77,8 @@ public class CustomScanner extends RoadmapScanner {
 
         SocketController.getClient().send(object.toString());*/
 
+        sendMap();
+
     }
 
     public JSONArray test(){
@@ -106,6 +108,9 @@ public class CustomScanner extends RoadmapScanner {
         JSONObject object = new JSONObject();
         JSONObject data = new JSONObject();
         object.put("event", "roadmap");
+        for(int i = 0; i < getRoadmap().toList().size(); i++){
+            data.put(String.valueOf(i), roadmap.toList().get(i).toString());
+        }
         data.put("map", getRoadmap());
         object.put("data", data);
         SocketController.getClient().send(object.toString());

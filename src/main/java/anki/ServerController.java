@@ -31,7 +31,7 @@ public class ServerController {
 
      */
 
-    private InetSocketAddress address = new InetSocketAddress("129.3.169.200", 5020);
+    private InetSocketAddress address = new InetSocketAddress("129.3.208.118", 5020);
 
 
 
@@ -145,6 +145,7 @@ public class ServerController {
                                     if (users[i] == null) {
                                         users[i] = new User(user, vehicle, -1, conn, null);
                                         newUserData(i, data);
+                                        break;
                                     }
                                 }
                             } else {
@@ -166,7 +167,7 @@ public class ServerController {
                             currentUser = data.getString("username");
                             System.out.println(data.toString());
                             for (int i = 0; i < 4; i++) {
-                                if (users[i].getName().equals(currentUser)) {
+                                if (users[i] != null && users[i].getName().equals(currentUser)) {
                                     //LocalizationPositionUpdateMessage positionMessage = (LocalizationPositionUpdateMessage) data.get("message");
                                     //u.setPosition(positionMessage.getRoadPieceId());*/
                                     System.out.println("PLAYER: " + data.getString("username") + "   AT POSITION: " + data.get("position"));
@@ -218,6 +219,36 @@ public class ServerController {
         for(int i = 0; i < 4; i++){
             if(users[i].getName().equals(name)){
                 users[i] = null;
+                switch(i){
+                    case 0:
+                        user1.setText("NULL");
+                        user1vehicle.setText("NULL");
+                        user1speed.setText("NULL");
+                        user1position.setText("NULL");
+                        user1direction.setText("NULL");
+                        break;
+                    case 1:
+                        user2.setText("NULL");
+                        user2vehicle.setText("NULL");
+                        user2speed.setText("NULL");
+                        user2position.setText("NULL");
+                        user2direction.setText("NULL");
+                        break;
+                    case 2:
+                        user3.setText("NULL");
+                        user3vehicle.setText("NULL");
+                        user3speed.setText("NULL");
+                        user3position.setText("NULL");
+                        user3direction.setText("NULL");
+                        break;
+                    case 3:
+                        user4.setText("NULL");
+                        user4vehicle.setText("NULL");
+                        user4speed.setText("NULL");
+                        user4position.setText("NULL");
+                        user4direction.setText("NULL");
+                        break;
+                }
             }
         }
     }
@@ -262,20 +293,20 @@ public class ServerController {
             public void run() {
                 switch(location){
                     case 0:
-                        user1speed.setText(message.get("username").toString());
-                        user1position.setText(message.get("vehicle").toString());
+                        user1.setText(message.get("username").toString());
+                        user1vehicle.setText(message.get("vehicle").toString());
                         break;
                     case 1:
-                        user2speed.setText(message.get("username").toString());
-                        user2position.setText(message.get("vehicle").toString());
+                        user2.setText(message.get("username").toString());
+                        user2vehicle.setText(message.get("vehicle").toString());
                         break;
                     case 2:
-                        user3speed.setText(message.get("username").toString());
-                        user3position.setText(message.get("vehicle").toString());
+                        user3.setText(message.get("username").toString());
+                        user3vehicle.setText(message.get("vehicle").toString());
                         break;
                     case 3:
-                        user4speed.setText(message.get("username").toString());
-                        user4position.setText(message.get("vehicle").toString());
+                        user4.setText(message.get("username").toString());
+                        user4vehicle.setText(message.get("vehicle").toString());
                         break;
                 }
             }
