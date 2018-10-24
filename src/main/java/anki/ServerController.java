@@ -9,7 +9,12 @@ import de.adesso.anki.roadmap.roadpieces.Roadpiece;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -31,14 +36,17 @@ public class ServerController {
 
      */
 
-    private InetSocketAddress address = new InetSocketAddress("129.3.208.118", 5020);
+    private InetSocketAddress address = new InetSocketAddress("129.3.169.221", 5021);
 
 
 
-    User users[];
+    private User users[];
+    private String mapCoords[];
+    private ImageView userCars[] = new ImageView[4];
+    private static int mapLength;
 
     @FXML
-    AnchorPane anchor;
+    private AnchorPane anchor;
 
     //user stat stuff
     @FXML
@@ -58,47 +66,53 @@ public class ServerController {
     @FXML
     private Label user2vehicle;
     @FXML
-    Label user2speed;
+    private Label user2speed;
     @FXML
-    Label user2direction;
+    private Label user2direction;
     @FXML
-    Label user2position;
+    private Label user2position;
 
     @FXML
-    Label user3;
+    private Label user3;
     @FXML
-    Label user3vehicle;
+    private Label user3vehicle;
     @FXML
-    Label user3speed;
+    private Label user3speed;
     @FXML
-    Label user3direction;
+    private Label user3direction;
     @FXML
-    Label user3position;
+    private Label user3position;
 
     @FXML
-    Label user4;
+    private Label user4;
     @FXML
-    Label user4vehicle;
+    private Label user4vehicle;
     @FXML
-    Label user4speed;
+    private Label user4speed;
     @FXML
-    Label user4direction;
+    private Label user4direction;
     @FXML
-    Label user4position;
+    private Label user4position;
 
     @FXML
-    VBox user1box;
+    private VBox user1box;
+
+    @FXML
+    private GridPane grid;
 
 
-    JSONObject object;
-    JSONObject data;
+    private ImageView views[];
 
-    int playerCount;
 
-    Roadmap map;
-    List<Roadpiece> listMap;
-    WebSocketServer server;
-    String currentUser;
+    private JSONObject object;
+    private JSONObject data;
+
+    private int playerCount;
+
+    private JSONObject map;
+    private List<Roadpiece> listMap;
+    private WebSocketServer server;
+    private String currentUser;
 
     @FXML
     public void initialize(){
@@ -143,8 +157,20 @@ public class ServerController {
                             if (playerCount != 4) {
                                 for (int i = 0; i < 4; i++) {
                                     if (users[i] == null) {
-                                        users[i] = new User(user, vehicle, -1, conn, null);
+                                        users[i] = new User(user, vehicle, -1, conn);
                                         newUserData(i, data);
+                                        switch(vehicle){
+                                            case "GROUNDSHOCK":
+                                                userCars[i] = new ImageView();
+                                                userCars[i].setImage(new Image("gs.jpg"));
+                                                userCars[i].setFitWidth(75);
+                                                userCars[i].setFitHeight(75);
+                                                break;
+                                            case "SKULL":
+                                                break;
+                                            case "NUKE":
+                                                break;
+                                        }
                                         break;
                                     }
                                 }
@@ -160,7 +186,10 @@ public class ServerController {
                             if (map == null) {
                                 //map = (Roadmap) data.get("map");
                                 //listMap = map.toList();
+                                map = data.getJSONObject("map");
+                                mapLength = data.getInt("length");
                                 System.out.println("RECIEVED MAP: " + data.get("map"));
+                                renderMap(object);
                             }
                             break;
                         case "locationUpdate":
@@ -176,6 +205,12 @@ public class ServerController {
                             }
                             break;
                         case "transitionUpdate":
+                            for(int i = 0; i < 4; i++){
+                                if(users[i] != null && data.getString("username").equals(users[i].getName())){
+                                    System.out.println("CAR RENDER IN PROGRESS");
+                                    renderCarLocation(userCars[i], users[i]);
+                                }
+                            }
                             //LocalizationTransitionUpdateMessage transitionUpdateMessage = (LocalizationTransitionUpdateMessage) data.get("message");
                             /*currentUser = object.getString("username");
                             for(User u: users){
@@ -343,6 +378,182 @@ public class ServerController {
             }
         });
     }
+
+    public void renderMap(JSONObject map){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+                int x = 5;
+                int y = 5;
+                String rawCoords;
+                grid.setAlignment(Pos.CENTER);
+                JSONObject data = map.getJSONObject("data");
+                int length = data.getInt("length");
+                mapCoords = new String[length];
+
+                //currentEnd helps determine where the end of the track piece is (up, down, left, right)
+                //0 = right
+                //1 = up
+                //2 = left
+                //3 = down;
+                int currentEnd = 0;
+
+                String[] mapPieces = new String[length];
+                JSONObject mapNames = data.getJSONObject("map");
+
+                int curveNum = 0;
+                for(int i = 0; i < length; i++){
+                    mapPieces[i] = mapNames.getString(String.valueOf(i));
+                    if(mapPieces[i].equals("CurvedRoadpiece")){
+                        curveNum++;
+                    }
+                }
+
+                if(curveNum != 4){
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+                    System.out.println("Uh oh");
+
+                }
+
+
+                if(mapPieces[0].equals("straight")){
+                    currentEnd = 1;
+                }
+                else{
+                    currentEnd = 0;
+                }
+
+                views = new ImageView[length];
+                grid.setHgap(0);
+                grid.setVgap(0);
+
+                for(int i = 0; i < length; i++){
+                    System.out.println(mapPieces[i]);
+                    switch (mapPieces[i]){
+                        case "CurvedRoadpiece":
+                            //place the curved in
+                            views[i] = new ImageView();
+                            views[i].setImage(new Image("curve.png"));
+                            views[i].setRotate(90 - (90 * Math.abs(currentEnd%4)));
+                            currentEnd++;
+                            break;
+                        case "StraightRoadpiece":
+                            views[i] = new ImageView();
+                            views[i].setImage(new Image("straight.png"));
+                            views[i].setRotate(90*(Math.abs(currentEnd%4)));
+                            //place straight
+                            break;
+                        case "StartRoadpiece":
+                            views[i] = new ImageView();
+                            views[i].setImage(new Image("straight.png"));
+                            views[i].setRotate(90*(Math.abs(currentEnd%4)));
+                            break;
+                    }
+                    views[i].setY(100);
+                    views[i].setX(100);
+                    views[i].setFitHeight(350);
+                    views[i].setFitWidth(350);
+                    grid.add(views[i], x, y);
+                    mapCoords[i] = new String(x + ":" + y);
+                    rawCoords = getCoordinates(x, y, currentEnd);
+                    x = Integer.valueOf(rawCoords.split(":")[0]);
+                    y = Integer.valueOf(rawCoords.split(":")[1]);
+                }
+
+            }
+        });
+
+    }
+
+    public void renderCarLocation(ImageView vehicle, User user){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                int x = Integer.valueOf(mapCoords[Math.abs(user.position%mapLength)].split(":")[0]);
+                int y = Integer.valueOf(mapCoords[Math.abs(user.position%mapLength)].split(":")[1]);
+                grid.getChildren().remove(vehicle);
+                user.position++;
+                grid.add(vehicle, x, y);
+
+                GridPane.setHalignment(vehicle, HPos.CENTER);
+            }
+        });
+
+    }
+
+    public String getCoordinates(int x, int y, int currentEnd){
+        //seperated by :
+        String coords = "";
+        System.out.println(x + " " + y);
+
+        switch(currentEnd){
+            case 0:
+                y++;
+                break;
+            case 1:
+                x++;
+                break;
+            case 2:
+                y--;
+                break;
+            case 3:
+                x--;
+                break;
+        }
+
+        coords = x + ":" + y;
+        System.out.println(currentEnd);
+        System.out.println("---------------------"+coords+"---------------------");
+        return coords;
+    }
+
+
+    /*public void setMap(){
+        views = new ImageView[4];
+        for(int i = 0; i < 4; i++){
+            views[i] = new ImageView();
+            views[i].setImage(new Image("curve.png"));
+
+            if(i <= 1) {
+                views[i].setRotate(90-(i*90));
+                grid.add(views[i], 1 + i, 10);
+            }
+            else{
+                views[i].setRotate(90*i);
+                grid.add(views[i], 1 + i%2, 9);
+            }
+        }
+    }
+
+    public void updateMap(){
+        if(vehicleView == null){
+            vehicleView = new ImageView(new Image("gs.jpg"));
+            vehicleView.setFitHeight(50);
+            vehicleView.setFitWidth(50);
+        }
+        grid.add(vehicleView, 2, 10);
+    }*/
 }
 
 

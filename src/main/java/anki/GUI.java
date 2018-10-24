@@ -48,14 +48,8 @@ public class GUI implements KeyListener {
 
     Stage stage;
 
-
-    ImageView vehicleView;
-
     MessageListener<LocalizationPositionUpdateMessage> positionListener;
     MessageListener<LocalizationTransitionUpdateMessage> transitionListener;
-
-
-    ImageView views[];
 
 
     @FXML
@@ -94,12 +88,11 @@ public class GUI implements KeyListener {
             controller = new SocketController(user, connectCars.gs);
             CustomScanner scanner = new CustomScanner(connectCars.gs);
 
+            controller.connectSocket();
             scanner.startScanning();
             while (!scanner.isComplete()) {
                 Thread.sleep(500);
             }
-            scanner.stopScanning();
-
 
             input.setVisible(false);
 
@@ -107,7 +100,7 @@ public class GUI implements KeyListener {
             //currentMap = scanner.getRoadmap();
             System.out.println("TEST1");
             //System.out.println(scanner.getIdList());
-            System.out.println(scanner.getIdList());
+            //System.out.println(scanner.getIdList());
             scanner.test();
             System.out.println("TEST2");
             scanner.reset();
@@ -115,7 +108,6 @@ public class GUI implements KeyListener {
             connectCars.gs.addMessageListener(LocalizationTransitionUpdateMessage.class, transitionListener);
 
             lights = false;
-            controller.connectSocket();
             Thread.sleep(100);
             scanner.sendMap();
             scene.addEventHandler(javafx.scene.input.KeyEvent.KEY_PRESSED, new EventHandler<javafx.scene.input.KeyEvent>() {
@@ -179,6 +171,8 @@ public class GUI implements KeyListener {
         } catch(ConnectException exception){
             System.out.println("Connection Failed");
         } catch(Exception exception){
+            System.out.println(exception.getLocalizedMessage());
+            exception.printStackTrace();
             connectCars.gs.disconnect();
         }
 
@@ -225,13 +219,13 @@ public class GUI implements KeyListener {
             @Override
             public void run() {
                 drivingDirection.setText("DIRECTION: " + message.getDrivingDirection());
-                /*JSONObject object = new JSONObject();
+                JSONObject object = new JSONObject();
                 JSONObject data = new JSONObject();
-                object.put("event", "transition");
+                object.put("event", "transitionUpdate");
                 data.put("username", user);
                 data.put("message", message.toString());
                 object.put("data", data);
-                SocketController.getClient().send(object.toString());*/
+                SocketController.getClient().send(object.toString());
             }
         });
     }

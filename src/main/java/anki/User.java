@@ -10,14 +10,15 @@ public class User {
     String vehicle;
     int position;
     WebSocket conn;
-    Roadpiece mapPosition;
+    static int mapPosition;
 
-    public User(String name, String vehicle, int position, WebSocket client, Roadpiece mapPosition){
+
+    public User(String name, String vehicle, int position, WebSocket client){
         this.name = name;
         this.vehicle = vehicle;
         this.position = position;
         this.conn = client;
-        this.mapPosition = mapPosition;
+        this.mapPosition = 0;
     }
 
     public void setPosition(int position){
@@ -32,7 +33,7 @@ public class User {
         return vehicle;
     }
 
-    public void setMapPosition(Roadpiece r){
-        mapPosition = r;
+    public void setMapPosition(){
+        mapPosition++;
     }
 }

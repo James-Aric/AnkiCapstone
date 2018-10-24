@@ -17,6 +17,8 @@ public class CustomScanner extends RoadmapScanner {
     Vehicle vehicle;
     MessageListener<LocalizationPositionUpdateMessage> posUpdate;
     MessageListener<LocalizationTransitionUpdateMessage> transUpdate;
+    JSONObject locationIDs;
+    static int counter;
 
 
     public CustomScanner(Vehicle vehicle) {
@@ -26,6 +28,8 @@ public class CustomScanner extends RoadmapScanner {
 
     @Override
     public void startScanning() {
+        locationIDs = new JSONObject();
+        counter = 0;
         posUpdate = (message) -> handlePositionUpdate(message);
         vehicle.addMessageListener(
                 LocalizationPositionUpdateMessage.class,
@@ -57,6 +61,13 @@ public class CustomScanner extends RoadmapScanner {
                 System.out.println("STOPPING CAUSE I'M RETARDED LELELELELELE");
             }
         }
+    }
+
+    @Override
+    public void handlePositionUpdate(LocalizationPositionUpdateMessage message) {
+        lastPosition = message;
+        locationIDs.put(String.valueOf(counter), message.getRoadPieceId());
+        counter++;
     }
 
     @Override
@@ -93,25 +104,33 @@ public class CustomScanner extends RoadmapScanner {
         return jsonToSend;
     }
 
-    public String getIdList(){
-        String idlist = "";
+    public JSONObject getTypeList(){
+        JSONObject typeList = new JSONObject();
         List<Roadpiece> pieces = super.roadmap.toList();
-        for(Roadpiece r: pieces){
-            idlist+=""+r.getType() + ":";
-            System.out.println(r.getType());
+        for(int i = 0; i < pieces.size(); i++){
+            typeList.put(String.valueOf(i), pieces.get(i).getType());
+            System.out.println(typeList.getString(String.valueOf(i)));
+        }
+        return typeList;
+    }
+
+    /*public JSONObject getIdList(){
+        JSONObject idlist = new JSONObject();
+        List<Roadpiece> pieces = super.roadmap.toList();
+        for(int i = 0; i < pieces.size(); i++){
+            System.out.println(idlist.getString(String.valueOf(i)));
         }
         return idlist;
-    }
+    }*/
 
 
     public void sendMap(){
         JSONObject object = new JSONObject();
         JSONObject data = new JSONObject();
         object.put("event", "roadmap");
-        for(int i = 0; i < getRoadmap().toList().size(); i++){
-            data.put(String.valueOf(i), roadmap.toList().get(i).toString());
-        }
-        data.put("map", getRoadmap());
+        data.put("map", getTypeList());
+        data.put("ids", locationIDs);
+        data.put("length", getRoadmap().toList().size());
         object.put("data", data);
         SocketController.getClient().send(object.toString());
     }
