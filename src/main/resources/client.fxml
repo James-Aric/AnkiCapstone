@@ -4,14 +4,24 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane fx:id="anchor" prefHeight="456.0" prefWidth="752.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="anki.GUI">
    <children>
-      <TextField fx:id="input" layoutX="215.0" layoutY="228.0" />
-      <Button fx:id="connect" layoutX="215.0" layoutY="168.0" onAction="#connect" text="Connect" />
+      <TextField fx:id="input" layoutX="264.0" layoutY="57.0" />
+      <Button fx:id="connect" layoutX="118.0" layoutY="57.0" onAction="#searchForCars" text="Search for Cars" focusTraversable="false"/>
       <Label fx:id="speedTest" layoutX="529.0" layoutY="98.0" text="TEST" />
       <Label fx:id="pieceID" layoutX="529.0" layoutY="125.0" text="TEST" />
       <Label fx:id="offset" layoutX="529.0" layoutY="151.0" text="TEST" />
       <Label fx:id="drivingDirection" layoutX="529.0" layoutY="181.0" text="TEST" />
+      <VBox fx:id="foundCarsBox" layoutX="104.0" layoutY="128.0" prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <Button fx:id="groundShock" mnemonicParsing="false" text="Ground Shock" visible="false"/>
+            <Button fx:id="nuke" mnemonicParsing="false" text="Nuke" visible="false"/>
+            <Button fx:id="skull" mnemonicParsing="false" text="Skull" visible="false"/>
+            <Button mnemonicParsing="false" text="Button" visible="false" />
+            <Button mnemonicParsing="false" text="Button" visible="false" />
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

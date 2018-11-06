@@ -19,7 +19,7 @@
                         <Label fx:id="user1" prefHeight="20.0" prefWidth="160.0" text="PLACEHOLDER" />
                         <Label fx:id="user1vehicle" prefHeight="45.0" prefWidth="160.0" text="PLACEHOLDER" />
                         <Label fx:id="user1speed" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user1position" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user1POSITION" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
                         <Label fx:id="user1direction" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
                      </children>
                   </VBox>
@@ -28,7 +28,7 @@
                         <Label fx:id="user2" prefHeight="20.0" prefWidth="160.0" text="PLACEHOLDER" />
                         <Label fx:id="user2vehicle" prefHeight="45.0" prefWidth="160.0" text="PLACEHOLDER" />
                         <Label fx:id="user2speed" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user2position" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user2POSITION" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
                         <Label fx:id="user2direction" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
                      </children>
                   </VBox>
@@ -37,7 +37,7 @@
                         <Label fx:id="user3" prefHeight="20.0" prefWidth="160.0" text="PLACEHOLDER" />
                         <Label fx:id="user3vehicle" prefHeight="45.0" prefWidth="160.0" text="PLACEHOLDER" />
                         <Label fx:id="user3speed" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user3position" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user3POSITION" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
                         <Label fx:id="user3direction" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
                      </children>
                   </VBox>
@@ -46,7 +46,7 @@
                         <Label fx:id="user4" prefHeight="20.0" prefWidth="160.0" text="PLACEHOLDER" />
                         <Label fx:id="user4vehicle" prefHeight="45.0" prefWidth="160.0" text="PLACEHOLDER" />
                         <Label fx:id="user4speed" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user4position" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user4POSITION" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
                         <Label fx:id="user4direction" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
                      </children>
                   </VBox>
@@ -54,7 +54,7 @@
             </VBox>
          </children>
       </VBox>
-      <Separator layoutX="1328.0" layoutY="6.0" orientation="VERTICAL" prefHeight="635.0" prefWidth="28.0" />
+      <Separator layoutX="1328.0" layoutY="6.0" orientation="VERTICAL" prefHeight="988.0" prefWidth="28.0" />
       <Separator layoutX="1342.0" layoutY="462.0" prefHeight="3.0" prefWidth="258.0" />
       <Separator layoutX="1342.0" layoutY="155.0" prefHeight="3.0" prefWidth="258.0" />
       <Separator layoutX="1342.0" layoutY="304.0" prefHeight="3.0" prefWidth="258.0" />
@@ -67,8 +67,8 @@
                         <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="100.0" text="USER:" />
                         <Label alignment="CENTER_RIGHT" prefHeight="45.0" prefWidth="100.0" text="VEHICLE:" />
                         <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="SPEED:" />
-                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="position:" />
-                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="DIRECTION:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="POSITION:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="PLACE:" />
                      </children>
                   </VBox>
                   <VBox prefHeight="274.0" prefWidth="184.0">
@@ -76,8 +76,8 @@
                         <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="100.0" text="USER:" />
                         <Label alignment="CENTER_RIGHT" prefHeight="45.0" prefWidth="100.0" text="VEHICLE:" />
                         <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="SPEED:" />
-                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="position:" />
-                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="DIRECTION:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="POSITION:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="PLACE:" />
                      </children>
                   </VBox>
                   <VBox prefHeight="274.0" prefWidth="184.0">
@@ -85,8 +85,8 @@
                         <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="100.0" text="USER:" />
                         <Label alignment="CENTER_RIGHT" prefHeight="45.0" prefWidth="100.0" text="VEHICLE:" />
                         <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="SPEED:" />
-                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="position:" />
-                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="DIRECTION:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="POSITION:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="PLACE:" />
                      </children>
                   </VBox>
                   <VBox prefHeight="274.0" prefWidth="184.0">
@@ -94,8 +94,8 @@
                         <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="100.0" text="USER:" />
                         <Label alignment="CENTER_RIGHT" prefHeight="45.0" prefWidth="100.0" text="VEHICLE:" />
                         <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="SPEED:" />
-                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="position:" />
-                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="DIRECTION:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="POSITION:" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="100.0" text="PLACE:" />
                      </children>
                   </VBox>
                </children>
@@ -104,8 +104,8 @@
       </VBox>
       <GridPane fx:id="grid" alignment="CENTER" layoutX="14.0" layoutY="14.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="973.0" prefWidth="1318.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" halignment="CENTER"/>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" halignment="CENTER"/>
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -113,5 +113,6 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
+      <Separator layoutX="1340.0" layoutY="610.0" prefHeight="3.0" prefWidth="258.0" />
    </children>
 </AnchorPane>

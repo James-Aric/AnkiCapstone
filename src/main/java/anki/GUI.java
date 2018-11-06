@@ -1,8 +1,9 @@
 package anki;
 
 import de.adesso.anki.MessageListener;
+import de.adesso.anki.Model;
+import de.adesso.anki.Vehicle;
 import de.adesso.anki.messages.*;
-import de.adesso.anki.roadmap.Roadmap;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -12,19 +13,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.json.JSONObject;
-
-import javax.swing.*;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URISyntaxException;
+import java.util.List;
 
 
 public class GUI implements KeyListener {
@@ -44,7 +43,10 @@ public class GUI implements KeyListener {
     private TextField input;
 
     @FXML
-    Button connect;
+    Button connect, skull, groundShock, nuke;
+
+    @FXML
+    VBox foundCarsBox;
 
     Stage stage;
 
@@ -60,17 +62,61 @@ public class GUI implements KeyListener {
 
 
     SocketController controller;
-    Roadmap currentMap;
+    //Roadmap currentMap;
 
+    Node source;
     public GUI(){
     }
 
-    public void connect(ActionEvent event) throws URISyntaxException {
+    public void searchForCars(ActionEvent event) throws IOException {
+        source = (Node) event.getSource();
+        scene = source.getScene();
+        stage = (Stage) scene.getWindow();
+        List<Vehicle> foundCars = connectCars.returnVehicles();
+        for(Vehicle v: foundCars){
+            switch(v.getAdvertisement().getModel()){
+                case GROUNDSHOCK:
+                    groundShock.setVisible(true);
+                    groundShock.setOnAction(e -> {
+                        try {
+                            connect(Model.GROUNDSHOCK);
+                        } catch (URISyntaxException e1) {
+                            e1.printStackTrace();
+                        }
+                    });
+                    break;
+                case NUKE:
+                    nuke.setVisible(true);
+                    nuke.setOnAction(e -> {
+                        try {
+                            connect(Model.NUKE);
+                        } catch (URISyntaxException e1) {
+                            e1.printStackTrace();
+                        }
+                    });
+                    break;
+                case SKULL:
+                    skull.setVisible(true);
+                    skull.setOnAction(e -> {
+                        try {
+                            connect(Model.SKULL);
+                        } catch (URISyntaxException e1) {
+                            e1.printStackTrace();
+                        }
+                    });
+                    break;
+                case GUARDIAN:
+                    break;
+            }
+        }
+    }
+
+    public void connect(Model model) throws URISyntaxException {
         try {
-            speedTest.setText("500");
-            Node source = (Node) event.getSource();
+            //speedTest.setText("500");
+            /*Node source = (Node) event.getSource();
             scene = source.getScene();
-            stage = (Stage) scene.getWindow();
+            stage = (Stage) scene.getWindow();*/
             //setMap();
             //updateMap();
             System.out.println("SCENE SET");
@@ -84,7 +130,8 @@ public class GUI implements KeyListener {
 
         }
         try {
-            connectCars.connect();
+
+            connectCars.connect(model);
             controller = new SocketController(user, connectCars.gs);
             CustomScanner scanner = new CustomScanner(connectCars.gs);
 
@@ -95,6 +142,17 @@ public class GUI implements KeyListener {
             }
 
             input.setVisible(false);
+            if(groundShock.isVisible()){
+                groundShock.setVisible(false);
+            }
+
+            if(skull.isVisible()){
+                skull.setVisible(false);
+            }
+
+            if(groundShock.isVisible()){
+                nuke.setVisible(false);
+            }
 
 
             //currentMap = scanner.getRoadmap();
@@ -229,31 +287,5 @@ public class GUI implements KeyListener {
             }
         });
     }
-
-    /*public void setMap(){
-        views = new ImageView[4];
-        for(int i = 0; i < 4; i++){
-            views[i] = new ImageView();
-            views[i].setImage(new Image("curve.png"));
-
-            if(i <= 1) {
-                views[i].setRotate(90-(i*90));
-                grid.add(views[i], 1 + i, 10);
-            }
-            else{
-                views[i].setRotate(90*i);
-                grid.add(views[i], 1 + i%2, 9);
-            }
-        }
-    }
-
-    public void updateMap(){
-        if(vehicleView == null){
-            vehicleView = new ImageView(new Image("gs.jpg"));
-            vehicleView.setFitHeight(50);
-            vehicleView.setFitWidth(50);
-        }
-        grid.add(vehicleView, 2, 10);
-    }*/
 
 }

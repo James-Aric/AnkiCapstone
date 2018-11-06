@@ -1,13 +1,9 @@
 package anki;
 
 import anki.User;
-import de.adesso.anki.Vehicle;
-import de.adesso.anki.messages.LocalizationPositionUpdateMessage;
-import de.adesso.anki.messages.LocalizationTransitionUpdateMessage;
-import de.adesso.anki.roadmap.Roadmap;
+
 import de.adesso.anki.roadmap.roadpieces.Roadpiece;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -23,7 +19,9 @@ import org.json.JSONObject;
 import javafx.scene.control.Label;
 
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
+import java.rmi.activation.ActivationGroup_Stub;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -36,12 +34,14 @@ public class ServerController {
 
      */
 
-    private InetSocketAddress address = new InetSocketAddress("129.3.169.221", 5021);
+    private InetSocketAddress address = new InetSocketAddress("129.3.211.200", 5023);
 
 
 
     private User users[];
+    private CustomRoadpiece customMap[];
     private String mapCoords[];
+    private int mapIDs[];
     private ImageView userCars[] = new ImageView[4];
     private static int mapLength;
 
@@ -95,9 +95,6 @@ public class ServerController {
     private Label user4position;
 
     @FXML
-    private VBox user1box;
-
-    @FXML
     private GridPane grid;
 
 
@@ -110,7 +107,6 @@ public class ServerController {
     private int playerCount;
 
     private JSONObject map;
-    private List<Roadpiece> listMap;
     private WebSocketServer server;
     private String currentUser;
 
@@ -132,14 +128,18 @@ public class ServerController {
         server = new WebSocketServer(address) {
             @Override
             public void onOpen(WebSocket conn, ClientHandshake handshake) {
-                /*sers = new User[4];*/
+                /*Users = new User[4];*/
                 System.out.println("NEW CONNECTION");
 
             }
 
             @Override
             public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-
+                for(User u: users){
+                    if(u.conn == conn){
+                        removePlayer(u.getName());
+                    }
+                }
             }
 
             @Override
@@ -157,20 +157,17 @@ public class ServerController {
                             if (playerCount != 4) {
                                 for (int i = 0; i < 4; i++) {
                                     if (users[i] == null) {
-                                        users[i] = new User(user, vehicle, -1, conn);
-                                        newUserData(i, data);
-                                        switch(vehicle){
-                                            case "GROUNDSHOCK":
-                                                userCars[i] = new ImageView();
-                                                userCars[i].setImage(new Image("gs.jpg"));
-                                                userCars[i].setFitWidth(75);
-                                                userCars[i].setFitHeight(75);
-                                                break;
-                                            case "SKULL":
-                                                break;
-                                            case "NUKE":
-                                                break;
-                                        }
+                                        Label[] temp = returnUserData(i);
+                                        Platform.runLater(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                temp[0].setText(user);
+                                                temp[1].setText(vehicle);
+                                            }
+                                        });
+                                        users[i] = new User(0, conn, temp[2], temp[3],temp[1],temp[0]);
+                                        //newUserData(i, data);
+                                        setVehicle(data.getString("vehicle"), i);
                                         break;
                                     }
                                 }
@@ -188,9 +185,16 @@ public class ServerController {
                                 //listMap = map.toList();
                                 map = data.getJSONObject("map");
                                 mapLength = data.getInt("length");
+                                constructIDList(data.getJSONObject("ids"));
                                 System.out.println("RECIEVED MAP: " + data.get("map"));
                                 renderMap(object);
                             }
+                            /*for(int i = 0; i < 4; i++){
+                                if(users[i].getName().equals(data.getString("username"))){
+                                    renderCarLocation(userCars[i], users[i]);
+                                    break;
+                                }
+                            }*/
                             break;
                         case "locationUpdate":
                             currentUser = data.getString("username");
@@ -200,7 +204,8 @@ public class ServerController {
                                     //LocalizationPositionUpdateMessage positionMessage = (LocalizationPositionUpdateMessage) data.get("message");
                                     //u.setPosition(positionMessage.getRoadPieceId());*/
                                     System.out.println("PLAYER: " + data.getString("username") + "   AT POSITION: " + data.get("position"));
-                                    setUserData(i, data);
+                                    setUserData(users[i], data);
+                                    break;
                                 }
                             }
                             break;
@@ -208,21 +213,12 @@ public class ServerController {
                             for(int i = 0; i < 4; i++){
                                 if(users[i] != null && data.getString("username").equals(users[i].getName())){
                                     System.out.println("CAR RENDER IN PROGRESS");
+                                    //users[i].setMapPosition();
                                     renderCarLocation(userCars[i], users[i]);
-                                }
-                            }
-                            //LocalizationTransitionUpdateMessage transitionUpdateMessage = (LocalizationTransitionUpdateMessage) data.get("message");
-                            /*currentUser = object.getString("username");
-                            for(User u: users){
-                                if(u != null && u.getName().equals(currentUser)){
-                                    u.position++;
-                                    if(u.position == listMap.size()){
-                                        u.position = 0;
-                                    }
-                                    u.setMapPosition(listMap.get(u.position));
+                                    setRacePositions();
                                     break;
                                 }
-                            }*/
+                            }
                             break;
                     }
                 } catch (Exception e) {
@@ -241,88 +237,25 @@ public class ServerController {
 
             }
         };
+        server.setReuseAddr(true);
         server.start();
         System.out.println("Server started on " + server.getAddress());
         //user1.setText("test");
     }
-            //new InetSocketAddress("ws://localhost",3000);
-
-
 
 
     public void removePlayer(String name){
         for(int i = 0; i < 4; i++){
             if(users[i].getName().equals(name)){
+                users[i].removeThisPlayer();
                 users[i] = null;
-                switch(i){
-                    case 0:
-                        user1.setText("NULL");
-                        user1vehicle.setText("NULL");
-                        user1speed.setText("NULL");
-                        user1position.setText("NULL");
-                        user1direction.setText("NULL");
-                        break;
-                    case 1:
-                        user2.setText("NULL");
-                        user2vehicle.setText("NULL");
-                        user2speed.setText("NULL");
-                        user2position.setText("NULL");
-                        user2direction.setText("NULL");
-                        break;
-                    case 2:
-                        user3.setText("NULL");
-                        user3vehicle.setText("NULL");
-                        user3speed.setText("NULL");
-                        user3position.setText("NULL");
-                        user3direction.setText("NULL");
-                        break;
-                    case 3:
-                        user4.setText("NULL");
-                        user4vehicle.setText("NULL");
-                        user4speed.setText("NULL");
-                        user4position.setText("NULL");
-                        user4direction.setText("NULL");
-                        break;
-                }
+                break;
             }
         }
     }
 
-    /*public void setLabelArrays(){
 
-        user1Labels[0] = user1;
-        user1Labels[1] = user1vehicle;
-        user1Labels[2] = user1speed;
-        user1Labels[3] = user1speed;
-        user1Labels[4] = user1direction;
-
-        user2Labels[0] = user2;
-        user2Labels[1] = user2vehicle;
-        user2Labels[2] = user2speed;
-        user2Labels[3] = user2speed;
-        user2Labels[4] = user2direction;
-
-        user3Labels[0] = user3;
-        user3Labels[1] = user3vehicle;
-        user3Labels[2] = user3speed;
-        user3Labels[3] = user3speed;
-        user3Labels[4] = user3direction;
-
-        user4Labels[0] = user4;
-        user4Labels[1] = user4vehicle;
-        user4Labels[2] = user4speed;
-        user4Labels[3] = user4speed;
-        user4Labels[4] = user4direction;
-
-        labels[0] = user1Labels;
-        labels[1] = user2Labels;
-        labels[2] = user3Labels;
-        labels[3] = user4Labels;
-
-
-        return;
-    }*/
-    public void newUserData(int location, JSONObject message){
+    /*public void newUserData(int location, JSONObject message){
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -346,37 +279,45 @@ public class ServerController {
                 }
             }
         });
-    }
+    }*/
 
-    public void setUserData(int location, JSONObject message){
+    public void setUserData(User u, JSONObject data){
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                switch(location){
-                    case 0:
-                        user1speed.setText(message.get("speed").toString());
-                        user1position.setText(message.get("position").toString());
-                        user1direction.setText(message.get("offset").toString());
-                        break;
-                    case 1:
-                        user2speed.setText(message.get("speed").toString());
-                        user2position.setText(message.get("position").toString());
-                        user2direction.setText(message.get("offset").toString());
-                        break;
-                    case 2:
-                        user3speed.setText(message.get("speed").toString());
-                        user3position.setText(message.get("position").toString());
-                        user3direction.setText(message.get("offset").toString());
-                        break;
-                    case 3:
-                        user4speed.setText(message.get("speed").toString());
-                        user4position.setText(message.get("position").toString());
-                        user4direction.setText(message.get("offset").toString());
-                        break;
-                }
-
+                u.setSpeed(""+data.getInt("speed"));
             }
         });
+    }
+    public Label[] returnUserData(int location){
+        Label[] labels = new Label[4];
+        switch(location){
+            case 0:
+                labels[0] = user1;
+                labels[1] = user1vehicle;
+                labels[2] = user1speed;
+                labels[3] = user1direction;
+                break;
+            case 1:
+                labels[0] = user2;
+                labels[1] = user2vehicle;
+                labels[2] = user2speed;
+                labels[3] = user2direction;
+            break;
+            case 2:
+                labels[0] = user3;
+                labels[1] = user3vehicle;
+                labels[2] = user3speed;
+                labels[3] = user3direction;
+                break;
+            case 3:
+                labels[0] = user4;
+                labels[1] = user4vehicle;
+                labels[2] = user4speed;
+                labels[3] = user4direction;
+                break;
+        }
+        return labels;
     }
 
     public void renderMap(JSONObject map){
@@ -391,7 +332,7 @@ public class ServerController {
                 JSONObject data = map.getJSONObject("data");
                 int length = data.getInt("length");
                 mapCoords = new String[length];
-
+                customMap = new CustomRoadpiece[length];
                 //currentEnd helps determine where the end of the track piece is (up, down, left, right)
                 //0 = right
                 //1 = up
@@ -401,121 +342,190 @@ public class ServerController {
 
                 String[] mapPieces = new String[length];
                 JSONObject mapNames = data.getJSONObject("map");
-
-                int curveNum = 0;
+                JSONObject reversed = data.getJSONObject("reversed");
+                JSONObject locationIDs = data.getJSONObject("ids");
                 for(int i = 0; i < length; i++){
                     mapPieces[i] = mapNames.getString(String.valueOf(i));
-                    if(mapPieces[i].equals("CurvedRoadpiece")){
-                        curveNum++;
-                    }
-                }
-
-                if(curveNum != 4){
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-                    System.out.println("Uh oh");
-
                 }
 
 
-                if(mapPieces[0].equals("straight")){
-                    currentEnd = 1;
-                }
-                else{
-                    currentEnd = 0;
-                }
+                currentEnd = 1;
 
                 views = new ImageView[length];
                 grid.setHgap(0);
                 grid.setVgap(0);
+                int startOrEnd = -1;
 
                 for(int i = 0; i < length; i++){
                     System.out.println(mapPieces[i]);
+                    System.out.println("LENGTH: " + mapPieces.length);
                     switch (mapPieces[i]){
                         case "CurvedRoadpiece":
-                            //place the curved in
-                            views[i] = new ImageView();
-                            views[i].setImage(new Image("curve.png"));
-                            views[i].setRotate(90 - (90 * Math.abs(currentEnd%4)));
-                            currentEnd++;
+                            if(reversed.getBoolean(String.valueOf(i))){
+                                views[i] = new ImageView();
+                                views[i].setImage(new Image("curve.png"));
+                                currentEnd -= 2;
+                                views[i].setRotate(90 + (90 * Math.abs(currentEnd%4)));
+                            }
+                            else{
+                                //place the curved in
+                                views[i] = new ImageView();
+                                views[i].setImage(new Image("curve.png"));
+                                currentEnd++;
+                                views[i].setRotate(90 + (90 * Math.abs(currentEnd%4)));
+                            }
+
+
                             break;
                         case "StraightRoadpiece":
                             views[i] = new ImageView();
                             views[i].setImage(new Image("straight.png"));
-                            views[i].setRotate(90*(Math.abs(currentEnd%4)));
+                            views[i].setRotate(90*(Math.abs(currentEnd%2) + 1));
                             //place straight
                             break;
-                        case "StartRoadpiece":
+                        case "FinishRoadpiece":
+                            if(startOrEnd == -1){
+                                startOrEnd = i;
+                            }
                             views[i] = new ImageView();
-                            views[i].setImage(new Image("straight.png"));
-                            views[i].setRotate(90*(Math.abs(currentEnd%4)));
+                            views[i].setImage(new Image("start.png"));
+                            views[i].setRotate(90*(Math.abs(currentEnd%2) + 1));
                             break;
+                        case "StartRoadpiece":
+                            if(startOrEnd == -1){
+                                startOrEnd = i;
+                            }
+                            views[i] = new ImageView();
+                            views[i].setImage(new Image("start.png"));
+                            views[i].setRotate(90*(Math.abs(currentEnd%2) + 1));
+                            break;
+
                     }
+                    customMap[i] = new CustomRoadpiece(x, y, mapPieces[i], i);
                     views[i].setY(100);
                     views[i].setX(100);
                     views[i].setFitHeight(350);
                     views[i].setFitWidth(350);
                     grid.add(views[i], x, y);
                     mapCoords[i] = new String(x + ":" + y);
-                    rawCoords = getCoordinates(x, y, currentEnd);
-                    x = Integer.valueOf(rawCoords.split(":")[0]);
-                    y = Integer.valueOf(rawCoords.split(":")[1]);
+                    if(mapPieces[i].equals("FinishRoadpiece")){
+                        mapCoords[i] = x+":"+y;
+                    }
+                    else{
+                        rawCoords = getCoordinates(x, y, currentEnd);
+                        x = Integer.valueOf(rawCoords.split(":")[0]);
+                        y = Integer.valueOf(rawCoords.split(":")[1]);
+                    }
+
+                }
+                for(int i = 0; i < mapLength; i++){
+                    System.out.println(mapCoords[i]);
                 }
 
             }
         });
-
     }
 
     public void renderCarLocation(ImageView vehicle, User user){
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                int x = Integer.valueOf(mapCoords[Math.abs(user.position%mapLength)].split(":")[0]);
-                int y = Integer.valueOf(mapCoords[Math.abs(user.position%mapLength)].split(":")[1]);
-                grid.getChildren().remove(vehicle);
                 user.position++;
+                System.out.println( user.position + "        "  + Math.abs(user.position)%mapLength + "=============================================================================" + mapLength + "     " + mapCoords.length);
+                //System.out.println(user.position + "    " + mapCoords[user.position]);
+                int x = Integer.valueOf(mapCoords[Math.abs(user.position)%mapLength].split(":")[0]);
+                int y = Integer.valueOf(mapCoords[Math.abs(user.position)%mapLength].split(":")[1]);
+                grid.getChildren().remove(vehicle);
                 grid.add(vehicle, x, y);
-
+                System.out.println("CAR LOCATION NOW AT X: " + x + "  Y: " +y + "      INDEX: " +user.position%mapLength);
                 GridPane.setHalignment(vehicle, HPos.CENTER);
             }
         });
+    }
 
+    public Integer[][] calculateRacePosition(User users[]){
+        Integer indexPlaces[][] = new Integer[4][2];
+        for(int i = 0; i < 4; i++){
+            /*if(users[i] != null && users[firstIndex] != null){
+                if(users[i].position > users[firstIndex].position){
+                    firstIndex = i;
+                }
+            }*/
+            if(users[i] != null) {
+                indexPlaces[i][0] = users[i].position;
+                indexPlaces[i][1] = i;
+            }
+            else{
+                indexPlaces[i][0] = -100;
+                indexPlaces[i][1] = -1;
+            }
+        }
+        Arrays.sort(indexPlaces, java.util.Comparator.comparingInt(a -> a[0]));
+        for(int i = 0; i < 4; i++){
+            if(indexPlaces[i] != null){
+                System.out.println(indexPlaces[i][0] + "    " + indexPlaces[i][1]);
+            }
+        }
+        return  indexPlaces;
+    }
+
+    public void setRacePositions(){
+        Integer[][] racePos = calculateRacePosition(users);
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                int pos = -1;
+                for(int i = 0; i < 4; i++){
+                    if(users[i] != null){
+                        for(int j = 0; j < 4; j++){
+                            if(racePos[j][1] == i){
+                                //users[i].setRacePosition(""+j);
+                                switch (j){
+                                    case 0:
+                                        pos = 4;
+                                        break;
+                                    case 1:
+                                        pos = 3;
+                                        break;
+                                    case 2:
+                                        pos = 2;
+                                        break;
+                                    case 3:
+                                        pos = 1;
+                                        break;
+                                }
+                                users[i].setRacePosition(""+pos);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public void constructIDList(JSONObject idlist){
+        mapIDs = new int[mapLength];
+        for(int i = 0; i < mapLength; i++){
+            mapIDs[i] = idlist.getInt(i+"");
+        }
     }
 
     public String getCoordinates(int x, int y, int currentEnd){
-        //seperated by :
+        //separated by :
         String coords = "";
         System.out.println(x + " " + y);
 
-        switch(currentEnd){
+        switch(currentEnd%4){
             case 0:
-                y++;
+                y--;
                 break;
             case 1:
                 x++;
                 break;
             case 2:
-                y--;
+                y++;
                 break;
             case 3:
                 x--;
@@ -528,32 +538,29 @@ public class ServerController {
         return coords;
     }
 
-
-    /*public void setMap(){
-        views = new ImageView[4];
-        for(int i = 0; i < 4; i++){
-            views[i] = new ImageView();
-            views[i].setImage(new Image("curve.png"));
-
-            if(i <= 1) {
-                views[i].setRotate(90-(i*90));
-                grid.add(views[i], 1 + i, 10);
-            }
-            else{
-                views[i].setRotate(90*i);
-                grid.add(views[i], 1 + i%2, 9);
-            }
+    public void setVehicle(String vehicle, int i){
+        switch(vehicle){
+            case "GROUNDSHOCK":
+                userCars[i] = new ImageView();
+                userCars[i].setImage(new Image("gs.jpg"));
+                userCars[i].setFitWidth(75);
+                userCars[i].setFitHeight(75);
+                break;
+            case "SKULL":
+                userCars[i] = new ImageView();
+                userCars[i].setImage(new Image("skull.jpg"));
+                userCars[i].setFitWidth(75);
+                userCars[i].setFitHeight(75);
+                break;
+            case "NUKE":
+                userCars[i] = new ImageView();
+                userCars[i].setImage(new Image("nuke.jpg"));
+                userCars[i].setFitWidth(75);
+                userCars[i].setFitHeight(75);
+                break;
+            //add more if i can remember to.
         }
     }
-
-    public void updateMap(){
-        if(vehicleView == null){
-            vehicleView = new ImageView(new Image("gs.jpg"));
-            vehicleView.setFitHeight(50);
-            vehicleView.setFitWidth(50);
-        }
-        grid.add(vehicleView, 2, 10);
-    }*/
 }
 
 

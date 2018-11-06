@@ -10,6 +10,7 @@ import de.adesso.anki.messages.*;
 import de.adesso.anki.messages.LightsPatternMessage.LightConfig;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class Connector implements MessageListener, NotificationListener {
     public Connector(){
 
     }
+    List<Vehicle> vehicles;
 
     public void messageReceived(Message message) {
         System.out.println(message);
@@ -102,12 +104,12 @@ public class Connector implements MessageListener, NotificationListener {
     Vehicle gs = null;
     AnkiConnector anki;
 
-    public void connect() throws IOException {
+    public void connect(Model model) throws IOException {
         gs = null;
         System.out.println("Launching connectors...");
-        anki = new AnkiConnector("localhost", 5000);
+        //anki = new AnkiConnector("localhost", 5000);
         System.out.println("looking for cars...");
-        List<Vehicle> vehicles = anki.findVehicles();
+        //List<Vehicle> vehicles = anki.findVehicles();
         try {
             if (vehicles.isEmpty()) {
                 System.out.println("NO CARS FOUND.");
@@ -117,7 +119,7 @@ public class Connector implements MessageListener, NotificationListener {
                 while (iter.hasNext()) {
                     Vehicle v = iter.next();
                     System.out.println(v);
-                    if (v.getAdvertisement().getModel() /*== null) {//*/.equals(Model.GROUNDSHOCK)) {
+                    if (v.getAdvertisement().getModel() /*== null) {//*/.equals(model)) {
                         System.out.println("taking model " + v.getAdvertisement().getModel());
                         gs = v;
                     }
@@ -164,6 +166,12 @@ public class Connector implements MessageListener, NotificationListener {
         }catch(Exception e){
             System.out.println("ERROR: " + e);
         }
+    }
+
+    public List<Vehicle> returnVehicles() throws IOException{
+        anki = new AnkiConnector("localhost", 5000);
+        vehicles = anki.findVehicles();
+        return vehicles;
     }
 
     public void disconnect() {

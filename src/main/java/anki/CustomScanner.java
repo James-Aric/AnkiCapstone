@@ -18,6 +18,7 @@ public class CustomScanner extends RoadmapScanner {
     MessageListener<LocalizationPositionUpdateMessage> posUpdate;
     MessageListener<LocalizationTransitionUpdateMessage> transUpdate;
     JSONObject locationIDs;
+    JSONObject reversedPieces;
     static int counter;
 
 
@@ -29,6 +30,7 @@ public class CustomScanner extends RoadmapScanner {
     @Override
     public void startScanning() {
         locationIDs = new JSONObject();
+        reversedPieces = new JSONObject();
         counter = 0;
         posUpdate = (message) -> handlePositionUpdate(message);
         vehicle.addMessageListener(
@@ -55,10 +57,14 @@ public class CustomScanner extends RoadmapScanner {
                     lastPosition.isParsedReverse()
 
             );
+            locationIDs.put(String.valueOf(counter), lastPosition.getRoadPieceId());
+            System.out.println(lastPosition.isParsedReverse());
+            reversedPieces.put(String.valueOf(counter), lastPosition.isParsedReverse());
+            counter++;
             //idList+=""+lastPosition.getLocationId()+":";
             if (super.roadmap.isComplete()) {
                 this.stopScanning();
-                System.out.println("STOPPING CAUSE I'M RETARDED LELELELELELE");
+                //System.out.println("STOPPING CAUSE I'M RETARDED LELELELELELE");
             }
         }
     }
@@ -66,8 +72,6 @@ public class CustomScanner extends RoadmapScanner {
     @Override
     public void handlePositionUpdate(LocalizationPositionUpdateMessage message) {
         lastPosition = message;
-        locationIDs.put(String.valueOf(counter), message.getRoadPieceId());
-        counter++;
     }
 
     @Override
@@ -107,6 +111,7 @@ public class CustomScanner extends RoadmapScanner {
     public JSONObject getTypeList(){
         JSONObject typeList = new JSONObject();
         List<Roadpiece> pieces = super.roadmap.toList();
+        //boolean test = true;
         for(int i = 0; i < pieces.size(); i++){
             typeList.put(String.valueOf(i), pieces.get(i).getType());
             System.out.println(typeList.getString(String.valueOf(i)));
@@ -130,6 +135,7 @@ public class CustomScanner extends RoadmapScanner {
         object.put("event", "roadmap");
         data.put("map", getTypeList());
         data.put("ids", locationIDs);
+        data.put("reversed", reversedPieces);
         data.put("length", getRoadmap().toList().size());
         object.put("data", data);
         SocketController.getClient().send(object.toString());
