@@ -20,9 +20,7 @@ import javafx.scene.control.Label;
 
 import java.net.InetSocketAddress;
 import java.rmi.activation.ActivationGroup_Stub;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 public class ServerController {
@@ -36,7 +34,7 @@ public class ServerController {
 
     private InetSocketAddress address = new InetSocketAddress("129.3.211.200", 5023);
 
-
+    private static int playerCount = 0;
 
     private User users[];
     private CustomRoadpiece customMap[];
@@ -104,11 +102,11 @@ public class ServerController {
     private JSONObject object;
     private JSONObject data;
 
-    private int playerCount;
 
     private JSONObject map;
     private WebSocketServer server;
     private String currentUser;
+    private String currentVehicle;
 
     @FXML
     public void initialize(){
@@ -219,6 +217,23 @@ public class ServerController {
                                     break;
                                 }
                             }
+                            break;
+                        case "readyUp":
+                            currentUser = object.getString("username");
+                            currentVehicle = object.getString("vehicle");
+                            for(User u: users){
+                                if(u.username.equals(currentUser) && u.getVehicle().equals(currentVehicle)){
+                                    u.readyUp();
+                                    playerCount++;
+                                    JSONObject ready = new JSONObject();
+                                    ready.put("event", "playerCount");
+                                    ready.put("playerCount", playerCount);
+                                    server.broadcast(ready.toString());
+                                }
+                            }
+                            break;
+                        case "startRace":
+                            sendStartMessage();
                             break;
                     }
                 } catch (Exception e) {
@@ -471,7 +486,6 @@ public class ServerController {
 
     public void setRacePositions(){
         Integer[][] racePos = calculateRacePosition(users);
-
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -503,6 +517,11 @@ public class ServerController {
                 }
             }
         });
+    }
+
+    public void sendStartMessage(){
+        Timer timer = new Timer();
+        timer.schedule(new Countdown(5), 0, 1);
     }
 
     public void constructIDList(JSONObject idlist){
@@ -559,6 +578,27 @@ public class ServerController {
                 userCars[i].setFitHeight(75);
                 break;
             //add more if i can remember to.
+        }
+    }
+
+
+    class Countdown extends TimerTask{
+        int time;
+        public Countdown(int time){
+            this.time = time;
+        }
+
+        @Override
+        public void run() {
+            object = new JSONObject();
+            object.put("event", "countdown");
+            object.put("time", time);
+            time--;
+            server.broadcast(object.toString());
+            if(time == 0){
+                server.broadcast("{\"event\": \"start\"}");
+                this.cancel();
+            }
         }
     }
 }

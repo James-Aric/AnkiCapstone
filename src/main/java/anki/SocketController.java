@@ -49,6 +49,9 @@ public class SocketController {
                     switch (object.getString("event")){
                         case "position":
                             break;
+                        case "playerCount":
+                            GUI.updatePlayerCount(object.getInt("playerCount"));
+                            break;
 
                     }
                 } catch (JSONException ignored) {

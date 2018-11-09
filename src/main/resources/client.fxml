@@ -5,23 +5,30 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="anchor" prefHeight="456.0" prefWidth="752.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="anki.GUI">
    <children>
       <TextField fx:id="input" layoutX="264.0" layoutY="57.0" />
-      <Button fx:id="connect" layoutX="118.0" layoutY="57.0" onAction="#searchForCars" text="Search for Cars" focusTraversable="false"/>
+      <Button fx:id="connect" focusTraversable="false" layoutX="118.0" layoutY="57.0" onAction="#searchForCars" text="Search for Cars" />
       <Label fx:id="speedTest" layoutX="529.0" layoutY="98.0" text="TEST" />
       <Label fx:id="pieceID" layoutX="529.0" layoutY="125.0" text="TEST" />
       <Label fx:id="offset" layoutX="529.0" layoutY="151.0" text="TEST" />
       <Label fx:id="drivingDirection" layoutX="529.0" layoutY="181.0" text="TEST" />
       <VBox fx:id="foundCarsBox" layoutX="104.0" layoutY="128.0" prefHeight="200.0" prefWidth="100.0">
          <children>
-            <Button fx:id="groundShock" mnemonicParsing="false" text="Ground Shock" visible="false"/>
-            <Button fx:id="nuke" mnemonicParsing="false" text="Nuke" visible="false"/>
-            <Button fx:id="skull" mnemonicParsing="false" text="Skull" visible="false"/>
+            <Button fx:id="groundShock" mnemonicParsing="false" text="Ground Shock" visible="false" />
+            <Button fx:id="nuke" mnemonicParsing="false" text="Nuke" visible="false" />
+            <Button fx:id="skull" mnemonicParsing="false" text="Skull" visible="false" />
             <Button mnemonicParsing="false" text="Button" visible="false" />
             <Button mnemonicParsing="false" text="Button" visible="false" />
          </children>
       </VBox>
+      <Label fx:id="playerLabel" layoutX="628.0" layoutY="26.0" text="Label" />
+      <Label fx:id="countdownLabel" layoutX="273.0" layoutY="189.0" prefHeight="98.0" prefWidth="197.0" text="Label">
+         <font>
+            <Font name="System Bold" size="63.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

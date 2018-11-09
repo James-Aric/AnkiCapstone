@@ -53,9 +53,14 @@ public class GUI implements KeyListener {
     MessageListener<LocalizationPositionUpdateMessage> positionListener;
     MessageListener<LocalizationTransitionUpdateMessage> transitionListener;
 
+    private String vehicleName;
+
 
     @FXML
     Label speedTest, pieceID, offset, drivingDirection;
+
+    @FXML
+    static Label playerLabel, countdownLabel;
 
     LightsPatternMessage.LightConfig lc;
     LightsPatternMessage lpm;
@@ -80,6 +85,7 @@ public class GUI implements KeyListener {
                     groundShock.setOnAction(e -> {
                         try {
                             connect(Model.GROUNDSHOCK);
+                            vehicleName = "groundshock";
                         } catch (URISyntaxException e1) {
                             e1.printStackTrace();
                         }
@@ -90,6 +96,7 @@ public class GUI implements KeyListener {
                     nuke.setOnAction(e -> {
                         try {
                             connect(Model.NUKE);
+                            vehicleName = "nuke";
                         } catch (URISyntaxException e1) {
                             e1.printStackTrace();
                         }
@@ -100,6 +107,7 @@ public class GUI implements KeyListener {
                     skull.setOnAction(e -> {
                         try {
                             connect(Model.SKULL);
+                            vehicleName = "skull";
                         } catch (URISyntaxException e1) {
                             e1.printStackTrace();
                         }
@@ -168,10 +176,12 @@ public class GUI implements KeyListener {
             lights = false;
             Thread.sleep(100);
             scanner.sendMap();
+
             scene.addEventHandler(javafx.scene.input.KeyEvent.KEY_PRESSED, new EventHandler<javafx.scene.input.KeyEvent>() {
                 @Override
                 public void handle(javafx.scene.input.KeyEvent e) {
                     System.out.println(e.getCode());
+                    JSONObject object = new JSONObject();
                     switch (e.getCode()) {
                         //up
                         case UP:
@@ -221,6 +231,18 @@ public class GUI implements KeyListener {
                         case SHIFT:
                             connectCars.gs.sendMessage(new TurnMessage(3, 0));
                             break;
+                        case R:
+                            object.put("event", "ready");
+                            object.put("username", user);
+                            object.put("vehicle", vehicleName);
+                            controller.getClient().send(object.toString());
+                            break;
+                        case S:
+                            object = new JSONObject();
+                            object.put("event", "startRace");
+                            SocketController.getClient().send(object.toString());
+
+                            break;
                     }
                 }
             });
@@ -261,6 +283,7 @@ public class GUI implements KeyListener {
                 JSONObject data = new JSONObject();
                 object.put("event", "locationUpdate");
                 data.put("username", user);
+                data.put("vehicle", vehicleName);
                 //data.put("locationId", message.getLocationId());
                 data.put("position", message.getRoadPieceId());
                 data.put("offset", message.getOffsetFromRoadCenter());
@@ -281,9 +304,33 @@ public class GUI implements KeyListener {
                 JSONObject data = new JSONObject();
                 object.put("event", "transitionUpdate");
                 data.put("username", user);
+                data.put("vehicle", vehicleName);
                 data.put("message", message.toString());
                 object.put("data", data);
                 SocketController.getClient().send(object.toString());
+            }
+        });
+    }
+
+    public static void updatePlayerCount(int playerCount){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                playerLabel.setText("Players Ready: " + playerCount);
+            }
+        });
+    }
+
+    public static void updateCountdown(int countdown){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if(countdown != 0) {
+                    countdownLabel.setText("" + countdown);
+                }
+                else {
+                    countdownLabel.setText("GO!!!");
+                }
             }
         });
     }

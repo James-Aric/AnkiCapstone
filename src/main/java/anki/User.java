@@ -15,6 +15,7 @@ public class User {
     CustomRoadpiece roadpiece;
     private int lapNum;
     Label vehicle, username, speed, racePosition;
+    boolean ready;
 
 
     public User(int position, WebSocket client, Label speed, Label racePosition, Label vehicle, Label username){
@@ -26,6 +27,7 @@ public class User {
         this.speed = speed;
         this.lapNum = 0;
         this.username = username;
+        this.ready = false;
     }
 
     public int getLapNum(){
@@ -65,5 +67,9 @@ public class User {
         this.username.setText("PLACEHOLDER");
         this.speed.setText("PLACEHOLDER");
         this.racePosition.setText("PLACEHOLDER");
+    }
+
+    public void readyUp(){
+        this.ready = true;
     }
 }
