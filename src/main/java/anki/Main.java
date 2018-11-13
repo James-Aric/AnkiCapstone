@@ -18,8 +18,9 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 
         primaryStage.setTitle("SKULL");
-        URL url = new File("/home/jamearic/Documents/Github/AnkiCapstone/src/main/resources/client.fxml").toURL();
-        Parent root = FXMLLoader.load(url);
+        ClassLoader loader = getClass().getClassLoader();
+        File url = new File(loader.getResource("client.fxml").getFile());
+        Parent root = FXMLLoader.load(url.toURL());
         Scene scene = new Scene(root, 752, 456);
         scene.setFill(Paint.valueOf("#353b48"));
         primaryStage.setScene(scene);

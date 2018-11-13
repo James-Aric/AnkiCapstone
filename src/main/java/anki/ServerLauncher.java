@@ -22,8 +22,9 @@ public class ServerLauncher extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Hello World");
-        URL url = new File("/home/jamearic/Documents/Github/AnkiCapstone/src/main/resources/server.fxml").toURL();
-        Parent root = FXMLLoader.load(url);
+        ClassLoader loader = getClass().getClassLoader();
+        File url = new File(loader.getResource("server.fxml").getFile());
+        Parent root = FXMLLoader.load(url.toURL());
         Scene scene = new Scene(root);
         scene.setFill(Paint.valueOf("#353b48"));
         primaryStage.setScene(scene);

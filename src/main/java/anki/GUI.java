@@ -45,7 +45,7 @@ public class GUI implements KeyListener {
     private double startTime, bestLapTime, previousLap;
 
     @FXML
-    private TextField input;
+    private TextField input, ipInput;
 
     @FXML
     Button connect, skull, groundShock, nuke;
@@ -65,7 +65,7 @@ public class GUI implements KeyListener {
     Label speedTest, pieceID, offset, drivingDirection, bestLap, previousLapLabel, split;
 
     @FXML
-    Label playerLabel, countdownLabel;
+    Label playerLabel, countdownLabel, ipPrompt;
 
     LightsPatternMessage.LightConfig lc;
     LightsPatternMessage lpm;
@@ -140,7 +140,9 @@ public class GUI implements KeyListener {
             positionListener = (message) -> positionUpdate(message);
             transitionListener = (message) -> transitionUpdate(message);
             user = input.getText();
-
+            controller.address = ipInput.getText();
+            ipInput.setVisible(false);
+            ipPrompt.setVisible(false);
         }
         catch (NullPointerException ex){
 
