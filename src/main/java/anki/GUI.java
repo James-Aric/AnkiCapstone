@@ -149,7 +149,7 @@ public class GUI implements KeyListener {
 
             connectCars.connect(model);
             controller = new SocketController(user, connectCars.gs, this);
-            scanner = new CustomScanner(connectCars.gs);
+            scanner = new CustomScanner(connectCars.gs, controller);
 
             controller.connectSocket();
 
@@ -248,8 +248,9 @@ public class GUI implements KeyListener {
                             case S:
                                 object = new JSONObject();
                                 object.put("event", "startRace");
-                                SocketController.getClient().send(object.toString());
-
+                                controller.getClient().send(object.toString());
+                                connectCars.gs.addMessageListener(LocalizationPositionUpdateMessage.class, positionListener);
+                                connectCars.gs.addMessageListener(LocalizationTransitionUpdateMessage.class, transitionListener);
                                 break;
                         }
                     }
@@ -299,7 +300,7 @@ public class GUI implements KeyListener {
                 data.put("speed", message.getSpeed());
                 object.put("data", data);
                 System.out.println(object.toString());
-                SocketController.getClient().send(object.toString());
+                controller.getClient().send(object.toString());
             }
         });
     }
@@ -316,7 +317,8 @@ public class GUI implements KeyListener {
                 data.put("vehicle", vehicleName);
                 data.put("message", message.toString());
                 object.put("data", data);
-                SocketController.getClient().send(object.toString());
+                controller.getClient().send(object.toString());
+                System.out.println("SENT TRANSITION UPDATE ================================================================");
             }
         });
     }
@@ -355,8 +357,6 @@ public class GUI implements KeyListener {
         while(!scanner.isComplete()){
 
         }
-        connectCars.gs.addMessageListener(LocalizationPositionUpdateMessage.class, positionListener);
-        connectCars.gs.addMessageListener(LocalizationTransitionUpdateMessage.class, transitionListener);
         previousLap = 0;
     }
 
@@ -372,7 +372,7 @@ public class GUI implements KeyListener {
         object.put("event", "bestLap");
         object.put("time", (bestLapTime/1000));
         object.put("user", user);
-        SocketController.getClient().send(object.toString());
+        controller.getClient().send(object.toString());
         double temp = currentLap/1000;
         double splitTime =  temp - previousLap;
         Platform.runLater(new Runnable() {

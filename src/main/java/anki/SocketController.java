@@ -15,7 +15,7 @@ public class SocketController {
         CHANGE THIS TO MATCH SERVER IP
 
      */
-    static String address = "129.3.171.208";
+    static String address = "129.3.171.65";
 
 
     static String username;
@@ -89,7 +89,7 @@ public class SocketController {
 
 
 
-    public static WebSocketClient getClient(){
+    public WebSocketClient getClient(){
         return client;
     }
 

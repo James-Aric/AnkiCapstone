@@ -20,11 +20,12 @@ public class CustomScanner extends RoadmapScanner {
     JSONObject locationIDs;
     JSONObject reversedPieces;
     static int counter;
+    SocketController controller;
 
-
-    public CustomScanner(Vehicle vehicle) {
+    public CustomScanner(Vehicle vehicle, SocketController controller) {
         super(vehicle);
         this.vehicle = vehicle;
+        this.controller = controller;
     }
 
     @Override
@@ -138,7 +139,7 @@ public class CustomScanner extends RoadmapScanner {
         data.put("reversed", reversedPieces);
         data.put("length", getRoadmap().toList().size());
         object.put("data", data);
-        SocketController.getClient().send(object.toString());
+        controller.getClient().send(object.toString());
         System.out.println("map sent---------------------------------------------------------------------------------------");
     }
 
