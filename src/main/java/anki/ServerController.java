@@ -405,7 +405,7 @@ public class ServerController {
         });
     }
     public Label[] returnUserData(int location){
-        Label[] labels = new Label[4];
+        Label[] labels = new Label[5];
         switch(location){
             case 0:
                 labels[0] = user1;
