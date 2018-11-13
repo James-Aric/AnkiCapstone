@@ -121,10 +121,10 @@
       <Label layoutX="1410.0" layoutY="691.0" text="Held by:" />
       <Label fx:id="userBestLap" layoutX="1490.0" layoutY="691.0" prefHeight="16.0" prefWidth="98.0" />
       <Label fx:id="lapTime" layoutX="1490.0" layoutY="667.0" prefHeight="16.0" prefWidth="98.0" />
-      <Button fx:id="setIp" onAction="#setIP" layoutX="1354.0" layoutY="948.0" mnemonicParsing="false" text="Button" />
+      <Button fx:id="setIp" layoutX="1354.0" layoutY="948.0" mnemonicParsing="false" onAction="#setIP" text="Set IP" />
       <TextField fx:id="ipName" layoutX="1422.0" layoutY="948.0" />
-      <TextField fx:id="lapTotal" layoutX="1422.0" layoutY="901.0" />
-      <Button fx:id="setLaps" onAction="#setLapWins" layoutX="1354.0" layoutY="901.0" mnemonicParsing="false" text="Button" />
-      <Button fx:id="reset" onAction="resetGame" layoutX="1438.0" layoutY="836.0" mnemonicParsing="false" text="Reset" />
+      <TextField fx:id="lapTotal" layoutX="1447.0" layoutY="901.0" prefHeight="26.0" prefWidth="146.0" />
+      <Button fx:id="setLaps" layoutX="1354.0" layoutY="901.0" mnemonicParsing="false" onAction="#setLapWins" text="Race Laps" />
+      <Button fx:id="reset" layoutX="1438.0" layoutY="836.0" mnemonicParsing="false" onAction="#resetGame" text="Reset" />
    </children>
 </AnchorPane>
