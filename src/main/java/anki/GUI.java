@@ -246,13 +246,13 @@ public class GUI implements KeyListener {
                                 object.put("username", user);
                                 object.put("vehicle", vehicleName);
                                 controller.getClient().send(object.toString());
+                                connectCars.gs.addMessageListener(LocalizationPositionUpdateMessage.class, positionListener);
+                                connectCars.gs.addMessageListener(LocalizationTransitionUpdateMessage.class, transitionListener);
                                 break;
                             case S:
                                 object = new JSONObject();
                                 object.put("event", "startRace");
                                 controller.getClient().send(object.toString());
-                                connectCars.gs.addMessageListener(LocalizationPositionUpdateMessage.class, positionListener);
-                                connectCars.gs.addMessageListener(LocalizationTransitionUpdateMessage.class, transitionListener);
                                 break;
                         }
                     }

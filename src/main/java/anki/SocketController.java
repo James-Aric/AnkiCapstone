@@ -55,7 +55,7 @@ public class SocketController {
                         case "position":
                             break;
                         case "playerCount":
-                            gui.updatePlayerCount(object.getInt("playerCount"));
+                            gui.updatePlayerCount(object.getInt("players"));
                             System.out.println("UPDATING PLAYER COUNT");
                             break;
                         case "countdown":
