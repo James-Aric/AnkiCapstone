@@ -1,26 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="anchor" prefHeight="456.0" prefWidth="752.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="anki.GUI">
    <children>
       <TextField fx:id="input" layoutX="264.0" layoutY="57.0" />
-      <Button fx:id="connect" layoutX="118.0" layoutY="57.0" onAction="#searchForCars" text="Search for Cars" focusTraversable="false"/>
-      <Label fx:id="speedTest" layoutX="529.0" layoutY="98.0" text="TEST" />
-      <Label fx:id="pieceID" layoutX="529.0" layoutY="125.0" text="TEST" />
-      <Label fx:id="offset" layoutX="529.0" layoutY="151.0" text="TEST" />
-      <Label fx:id="drivingDirection" layoutX="529.0" layoutY="181.0" text="TEST" />
-      <VBox fx:id="foundCarsBox" layoutX="104.0" layoutY="128.0" prefHeight="200.0" prefWidth="100.0">
+      <Button fx:id="connect" focusTraversable="false" layoutX="118.0" layoutY="57.0" onAction="#searchForCars" text="Search for Cars" />
+      <VBox fx:id="foundCarsBox" layoutX="128.0" layoutY="129.0" prefHeight="200.0" prefWidth="100.0">
          <children>
-            <Button fx:id="groundShock" mnemonicParsing="false" text="Ground Shock" visible="false"/>
-            <Button fx:id="nuke" mnemonicParsing="false" text="Nuke" visible="false"/>
-            <Button fx:id="skull" mnemonicParsing="false" text="Skull" visible="false"/>
+            <Button fx:id="groundShock" mnemonicParsing="false" text="Ground Shock" visible="false" />
+            <Button fx:id="nuke" mnemonicParsing="false" text="Nuke" visible="false" />
+            <Button fx:id="skull" mnemonicParsing="false" text="Skull" visible="false" />
             <Button mnemonicParsing="false" text="Button" visible="false" />
             <Button mnemonicParsing="false" text="Button" visible="false" />
+         </children>
+      </VBox>
+      <Label fx:id="playerLabel" layoutX="576.0" layoutY="25.0" prefHeight="16.0" prefWidth="129.0" text="Player count: " />
+      <Label fx:id="countdownLabel" layoutX="251.0" layoutY="160.0" prefHeight="98.0" prefWidth="197.0">
+         <font>
+            <Font name="System Bold" size="63.0" />
+         </font>
+      </Label>
+      <VBox layoutX="644.0" layoutY="95.0" prefHeight="298.0" prefWidth="100.0">
+         <children>
+            <Label fx:id="speedTest" text="TEST">
+               <padding>
+                  <Insets bottom="20.0" />
+               </padding>
+            </Label>
+            <Label fx:id="pieceID" text="TEST">
+               <padding>
+                  <Insets bottom="20.0" />
+               </padding>
+            </Label>
+            <Label fx:id="offset" text="TEST">
+               <padding>
+                  <Insets bottom="20.0" />
+               </padding>
+            </Label>
+            <Label fx:id="bestLap" text="TEST">
+               <padding>
+                  <Insets bottom="20.0" />
+               </padding>
+            </Label>
+            <Label fx:id="previousLapLabel" text="TEST">
+               <padding>
+                  <Insets bottom="20.0" />
+               </padding>
+            </Label>
+            <Label fx:id="split" text="TEST">
+               <padding>
+                  <Insets bottom="20.0" />
+               </padding>
+            </Label>
+         </children>
+      </VBox>
+      <Separator layoutX="505.0" layoutY="9.0" orientation="VERTICAL" prefHeight="441.0" prefWidth="0.0" />
+      <Separator layoutX="503.0" layoutY="59.0" prefHeight="3.0" prefWidth="249.0" />
+      <VBox layoutX="518.0" layoutY="95.0" prefHeight="298.0" prefWidth="100.0">
+         <children>
+            <Label text="Speed:">
+               <padding>
+                  <Insets bottom="20.0" />
+               </padding>
+            </Label>
+            <Label text="Roadpiece:">
+               <padding>
+                  <Insets bottom="20.0" />
+               </padding>
+            </Label>
+            <Label fx:id="offset1" text="Offset">
+               <padding>
+                  <Insets bottom="20.0" />
+               </padding>
+            </Label>
+            <Label fx:id="drivingDirection1" text="Best Lap Time:">
+               <padding>
+                  <Insets bottom="20.0" />
+               </padding>
+            </Label>
+            <Label fx:id="bestLap1" text="Previous TIme:">
+               <padding>
+                  <Insets bottom="20.0" />
+               </padding>
+            </Label>
+            <Label text="Split:">
+               <padding>
+                  <Insets bottom="20.0" />
+               </padding>
+            </Label>
          </children>
       </VBox>
    </children>

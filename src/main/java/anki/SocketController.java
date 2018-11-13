@@ -15,7 +15,7 @@ public class SocketController {
         CHANGE THIS TO MATCH SERVER IP
 
      */
-    static String address = "129.3.211.200";
+    static String address = "129.3.171.208";
 
 
     static String username;
@@ -25,7 +25,7 @@ public class SocketController {
     static JSONObject data;
 
 
-    public SocketController(String username, Vehicle vehicle) throws URISyntaxException{
+    public SocketController(String username, Vehicle vehicle, GUI gui) throws URISyntaxException{
         this.username = username;
         this.vehicle = vehicle;
         client = new WebSocketClient(new URI("ws://" + address + ":5023")) {
@@ -45,17 +45,30 @@ public class SocketController {
                 try{
                     object = new JSONObject(message);
                     data = null;
-                    data = object.getJSONObject("data");
+                    try{
+                        data = object.getJSONObject("data");
+                    }catch (Exception e){
+
+                    }
                     switch (object.getString("event")){
                         case "position":
                             break;
                         case "playerCount":
-                            GUI.updatePlayerCount(object.getInt("playerCount"));
+                            gui.updatePlayerCount(object.getInt("playerCount"));
+                            System.out.println("UPDATING PLAYER COUNT");
                             break;
-
+                        case "countdown":
+                            gui.updateCountdown(object.getInt("time"));
+                            break;
+                        case "scan":
+                            gui.startScanning();
+                            break;
+                        case "lapEnd":
+                            System.out.println("calculating lap time!!!!!!!!!!!!!----------------------------------------------------------------------------");
+                            gui.calculateLapTime((double)System.currentTimeMillis());
                     }
-                } catch (JSONException ignored) {
-
+                } catch (Exception ignored) {
+                    ignored.printStackTrace();
                 }
 
             }

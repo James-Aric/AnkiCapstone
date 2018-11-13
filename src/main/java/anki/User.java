@@ -16,6 +16,7 @@ public class User {
     private int lapNum;
     Label vehicle, username, speed, racePosition;
     boolean ready;
+    long bestLapTime;
 
 
     public User(int position, WebSocket client, Label speed, Label racePosition, Label vehicle, Label username){
@@ -28,6 +29,7 @@ public class User {
         this.lapNum = 0;
         this.username = username;
         this.ready = false;
+        bestLapTime = -1;
     }
 
     public int getLapNum(){

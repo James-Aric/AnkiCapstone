@@ -139,6 +139,7 @@ public class CustomScanner extends RoadmapScanner {
         data.put("length", getRoadmap().toList().size());
         object.put("data", data);
         SocketController.getClient().send(object.toString());
+        System.out.println("map sent---------------------------------------------------------------------------------------");
     }
 
 

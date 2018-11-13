@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.json.JSONObject;
@@ -28,6 +29,8 @@ import java.util.List;
 
 public class GUI implements KeyListener {
 
+    boolean playable = false;
+
     public Button start, stop;
     //public TextField input;
     Connector connectCars = new Connector();
@@ -38,6 +41,8 @@ public class GUI implements KeyListener {
     private boolean lights;
 
     private String user;
+
+    private double startTime, bestLapTime, previousLap;
 
     @FXML
     private TextField input;
@@ -57,13 +62,14 @@ public class GUI implements KeyListener {
 
 
     @FXML
-    Label speedTest, pieceID, offset, drivingDirection;
+    Label speedTest, pieceID, offset, drivingDirection, bestLap, previousLapLabel, split;
 
     @FXML
-    static Label playerLabel, countdownLabel;
+    Label playerLabel, countdownLabel;
 
     LightsPatternMessage.LightConfig lc;
     LightsPatternMessage lpm;
+    CustomScanner scanner;
 
 
     SocketController controller;
@@ -76,8 +82,10 @@ public class GUI implements KeyListener {
     public void searchForCars(ActionEvent event) throws IOException {
         source = (Node) event.getSource();
         scene = source.getScene();
+        bestLapTime = Double.MAX_VALUE;
         stage = (Stage) scene.getWindow();
         List<Vehicle> foundCars = connectCars.returnVehicles();
+        //countdownLabel.setText("COUNTDOWN HERE");
         for(Vehicle v: foundCars){
             switch(v.getAdvertisement().getModel()){
                 case GROUNDSHOCK:
@@ -140,14 +148,10 @@ public class GUI implements KeyListener {
         try {
 
             connectCars.connect(model);
-            controller = new SocketController(user, connectCars.gs);
-            CustomScanner scanner = new CustomScanner(connectCars.gs);
+            controller = new SocketController(user, connectCars.gs, this);
+            scanner = new CustomScanner(connectCars.gs);
 
             controller.connectSocket();
-            scanner.startScanning();
-            while (!scanner.isComplete()) {
-                Thread.sleep(500);
-            }
 
             input.setVisible(false);
             if(groundShock.isVisible()){
@@ -158,7 +162,7 @@ public class GUI implements KeyListener {
                 skull.setVisible(false);
             }
 
-            if(groundShock.isVisible()){
+            if(nuke.isVisible()){
                 nuke.setVisible(false);
             }
 
@@ -167,82 +171,87 @@ public class GUI implements KeyListener {
             System.out.println("TEST1");
             //System.out.println(scanner.getIdList());
             //System.out.println(scanner.getIdList());
-            scanner.test();
+            //scanner.test();
             System.out.println("TEST2");
-            scanner.reset();
-            connectCars.gs.addMessageListener(LocalizationPositionUpdateMessage.class, positionListener);
-            connectCars.gs.addMessageListener(LocalizationTransitionUpdateMessage.class, transitionListener);
+            //scanner.reset();
 
             lights = false;
             Thread.sleep(100);
-            scanner.sendMap();
+            //scanner.sendMap();
 
             scene.addEventHandler(javafx.scene.input.KeyEvent.KEY_PRESSED, new EventHandler<javafx.scene.input.KeyEvent>() {
                 @Override
                 public void handle(javafx.scene.input.KeyEvent e) {
                     System.out.println(e.getCode());
                     JSONObject object = new JSONObject();
-                    switch (e.getCode()) {
-                        //up
-                        case UP:
-                            currentSpeed += 50;
-                            connectCars.gs.sendMessage(new SetSpeedMessage(currentSpeed, 2000));
-                            System.out.println("Increasing speed to: " + currentSpeed + "!!!!!!!!");
-                            break;
-                        //down
-                        case DOWN:
-                            if (currentSpeed >= 50) {
-                                currentSpeed -= 50;
-                            } else {
-                                currentSpeed -= 50;
-                            }
-                            connectCars.gs.sendMessage(new SetSpeedMessage(currentSpeed, 2000));
-                            speedTest.setText("SPEED: "+ currentSpeed);
-                            break;
-                        case CONTROL:
-                            if(lights){
-                                lc = new LightsPatternMessage.LightConfig(LightsPatternMessage.LightChannel.TAIL, LightsPatternMessage.LightEffect.THROB, 0, 0, 0);
-                                lpm = new LightsPatternMessage();
-                                lights = false;
-                            }
-                            else{
-                                lc = new LightsPatternMessage.LightConfig(LightsPatternMessage.LightChannel.TAIL, LightsPatternMessage.LightEffect.STROBE, 0, 0, 0);
-                                lpm = new LightsPatternMessage();
-                                lights = true;
-                            }
-                            break;
-                        //right
-                        case RIGHT:
-                            connectCars.gs.sendMessage(new SetOffsetFromRoadCenterMessage(0));
-                            connectCars.gs.sendMessage(new ChangeLaneMessage(23, currentSpeed, 2000));
-                            //connectCars.gs.sendMessage(new TurnMessage(1, 0));
-                            break;
+                    if(playable){
+                        switch(e.getCode()){
+                            case UP:
+                                currentSpeed += 50;
+                                connectCars.gs.sendMessage(new SetSpeedMessage(currentSpeed, 2000));
+                                System.out.println("Increasing speed to: " + currentSpeed + "!!!!!!!!");
+                                break;
+                            //down
+                            case DOWN:
+                                if (currentSpeed >= 50) {
+                                    currentSpeed -= 50;
+                                } else {
+                                    currentSpeed -= 50;
+                                }
+                                connectCars.gs.sendMessage(new SetSpeedMessage(currentSpeed, 2000));
+                                speedTest.setText("SPEED: "+ currentSpeed);
+                                break;
+                            case CONTROL:
+                                if(lights){
+                                    lc = new LightsPatternMessage.LightConfig(LightsPatternMessage.LightChannel.TAIL, LightsPatternMessage.LightEffect.THROB, 0, 0, 0);
+                                    lpm = new LightsPatternMessage();
+                                    lights = false;
+                                }
+                                else{
+                                    lc = new LightsPatternMessage.LightConfig(LightsPatternMessage.LightChannel.TAIL, LightsPatternMessage.LightEffect.STROBE, 0, 0, 0);
+                                    lpm = new LightsPatternMessage();
+                                    lights = true;
+                                }
+                                break;
+                            //right
+                            case RIGHT:
+                                connectCars.gs.sendMessage(new SetOffsetFromRoadCenterMessage(0));
+                                connectCars.gs.sendMessage(new ChangeLaneMessage(23, currentSpeed, 2000));
+                                //connectCars.gs.sendMessage(new TurnMessage(1, 0));
+                                break;
 
-                        //right
-                        case LEFT:
-                            connectCars.gs.sendMessage(new SetOffsetFromRoadCenterMessage(0));
-                            connectCars.gs.sendMessage(new ChangeLaneMessage(-23, currentSpeed, 2000));
-                            //connectCars.gs.sendMessage(new TurnMessage(2, 0));
-                            break;
-                        case D:
-                            connectCars.disconnect();
-                            break;
+                            //right
+                            case LEFT:
+                                connectCars.gs.sendMessage(new SetOffsetFromRoadCenterMessage(0));
+                                connectCars.gs.sendMessage(new ChangeLaneMessage(-23, currentSpeed, 2000));
+                                //connectCars.gs.sendMessage(new TurnMessage(2, 0));
+                                break;
+                            case D:
+                                connectCars.disconnect();
+                                break;
 
-                        case SHIFT:
-                            connectCars.gs.sendMessage(new TurnMessage(3, 0));
-                            break;
-                        case R:
-                            object.put("event", "ready");
-                            object.put("username", user);
-                            object.put("vehicle", vehicleName);
-                            controller.getClient().send(object.toString());
-                            break;
-                        case S:
-                            object = new JSONObject();
-                            object.put("event", "startRace");
-                            SocketController.getClient().send(object.toString());
+                            case SHIFT:
+                                connectCars.gs.sendMessage(new TurnMessage(3, 0));
+                                break;
+                        }
+                    }
+                    else{
+                        switch (e.getCode()) {
+                            //up
 
-                            break;
+                            case R:
+                                object.put("event", "ready");
+                                object.put("username", user);
+                                object.put("vehicle", vehicleName);
+                                controller.getClient().send(object.toString());
+                                break;
+                            case S:
+                                object = new JSONObject();
+                                object.put("event", "startRace");
+                                SocketController.getClient().send(object.toString());
+
+                                break;
+                        }
                     }
                 }
             });
@@ -299,7 +308,7 @@ public class GUI implements KeyListener {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                drivingDirection.setText("DIRECTION: " + message.getDrivingDirection());
+                //drivingDirection.setText("DIRECTION: " + message.getDrivingDirection());
                 JSONObject object = new JSONObject();
                 JSONObject data = new JSONObject();
                 object.put("event", "transitionUpdate");
@@ -312,16 +321,17 @@ public class GUI implements KeyListener {
         });
     }
 
-    public static void updatePlayerCount(int playerCount){
+    public void updatePlayerCount(int playerCount){
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 playerLabel.setText("Players Ready: " + playerCount);
+                System.out.println("Player count updated");
             }
         });
     }
 
-    public static void updateCountdown(int countdown){
+    public void updateCountdown(int countdown){
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -330,9 +340,50 @@ public class GUI implements KeyListener {
                 }
                 else {
                     countdownLabel.setText("GO!!!");
+                    playable = true;
+                    startTime = System.currentTimeMillis();
                 }
             }
         });
     }
 
+    public void startScanning() throws InterruptedException{
+        scanner.startScanning();
+        while (!scanner.isComplete()) {
+            Thread.sleep(500);
+        }
+        while(!scanner.isComplete()){
+
+        }
+        connectCars.gs.addMessageListener(LocalizationPositionUpdateMessage.class, positionListener);
+        connectCars.gs.addMessageListener(LocalizationTransitionUpdateMessage.class, transitionListener);
+        previousLap = 0;
+    }
+
+    public void calculateLapTime(double newTime){
+        System.out.println(startTime + "     " + newTime + "    ---------------------------------");
+        System.out.println((newTime - startTime)/1000);
+        double currentLap = newTime-startTime;
+
+        if((currentLap) < bestLapTime){
+            bestLapTime = newTime-startTime;
+        }
+        JSONObject object = new JSONObject();
+        object.put("event", "bestLap");
+        object.put("time", (bestLapTime/1000));
+        object.put("user", user);
+        SocketController.getClient().send(object.toString());
+        double temp = currentLap/1000;
+        double splitTime =  temp - previousLap;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                bestLap.setText(String.valueOf(bestLapTime/1000));
+                previousLapLabel.setText(String.valueOf(previousLap));
+                split.setText(String.valueOf(splitTime));
+            }
+        });
+        previousLap = currentLap/1000;
+        startTime = (double)System.currentTimeMillis();
+    }
 }

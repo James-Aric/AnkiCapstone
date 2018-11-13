@@ -114,5 +114,10 @@
         </rowConstraints>
       </GridPane>
       <Separator layoutX="1340.0" layoutY="610.0" prefHeight="3.0" prefWidth="258.0" />
+      <Label layoutX="1416.0" layoutY="626.0" text="Overall Statistics" />
+      <Label layoutX="1367.0" layoutY="667.0" text="Best Lap Time:" />
+      <Label layoutX="1410.0" layoutY="691.0" text="Held by:" />
+      <Label fx:id="userBestLap" layoutX="1490.0" layoutY="691.0" prefHeight="16.0" prefWidth="98.0" text="Label" />
+      <Label fx:id="lapTime" layoutX="1490.0" layoutY="667.0" prefHeight="16.0" prefWidth="98.0" text="Label" />
    </children>
 </AnchorPane>

@@ -32,7 +32,7 @@ public class ServerController {
 
      */
 
-    private InetSocketAddress address = new InetSocketAddress("129.3.211.200", 5023);
+    private InetSocketAddress address = new InetSocketAddress("129.3.171.208", 5023);
 
     private static int playerCount = 0;
 
@@ -95,6 +95,8 @@ public class ServerController {
     @FXML
     private GridPane grid;
 
+    @FXML
+    private Label lapTime, userBestLap;
 
     private ImageView views[];
 
@@ -110,7 +112,7 @@ public class ServerController {
 
     @FXML
     public void initialize(){
-
+        lapTime.setText(""+ Long.MAX_VALUE);
     }
 
     public ServerController() {
@@ -123,6 +125,7 @@ public class ServerController {
 
     public void launchServer(){
         //user1.setText("test");
+
         server = new WebSocketServer(address) {
             @Override
             public void onOpen(WebSocket conn, ClientHandshake handshake) {
@@ -145,8 +148,12 @@ public class ServerController {
                 try {
                     object = new JSONObject(message);
                     data = null;
-                    data = object.getJSONObject("data");
-                    System.out.println(data.toString());
+                    try{
+                        data = object.getJSONObject("data");
+                    }catch (Exception e){
+                        System.out.println("received ready/start message");
+                    }
+                    //System.out.println(data.toString());
                     switch (object.getString("event")) {
                         case "connect":
                             String user = data.getString("username");
@@ -164,8 +171,18 @@ public class ServerController {
                                             }
                                         });
                                         users[i] = new User(0, conn, temp[2], temp[3],temp[1],temp[0]);
-                                        //newUserData(i, data);
                                         setVehicle(data.getString("vehicle"), i);
+                                        if(map == null){
+                                            object = new JSONObject();
+                                            object.put("event", "scan");
+                                            conn.send(object.toString());
+                                        }
+                                        else{
+                                            renderCarLocation(userCars[i], users[i]);
+                                        }
+                                        //newUserData(i, data);
+
+
                                         break;
                                     }
                                 }
@@ -179,6 +196,7 @@ public class ServerController {
                             break;
                         case "roadmap":
                             if (map == null) {
+                                System.out.println("map received------------------------------------------------");
                                 //map = (Roadmap) data.get("map");
                                 //listMap = map.toList();
                                 map = data.getJSONObject("map");
@@ -186,6 +204,11 @@ public class ServerController {
                                 constructIDList(data.getJSONObject("ids"));
                                 System.out.println("RECIEVED MAP: " + data.get("map"));
                                 renderMap(object);
+                                for(int i = 0; i < 4; i++){
+                                    if(users[i] != null){
+                                        renderCarLocation(userCars[i], users[i]);
+                                    }
+                                }
                             }
                             /*for(int i = 0; i < 4; i++){
                                 if(users[i].getName().equals(data.getString("username"))){
@@ -208,13 +231,22 @@ public class ServerController {
                             }
                             break;
                         case "transitionUpdate":
-                            for(int i = 0; i < 4; i++){
-                                if(users[i] != null && data.getString("username").equals(users[i].getName())){
-                                    System.out.println("CAR RENDER IN PROGRESS");
-                                    //users[i].setMapPosition();
-                                    renderCarLocation(userCars[i], users[i]);
-                                    setRacePositions();
-                                    break;
+                            if(map != null) {
+                                for (int i = 0; i < 4; i++) {
+                                    if (users[i] != null && data.getString("username").equals(users[i].getName())) {
+                                        System.out.println("CAR RENDER IN PROGRESS");
+                                        //users[i].setMapPosition();
+                                        users[i].position++;
+                                        renderCarLocation(userCars[i], users[i]);
+                                        setRacePositions();
+                                        if (users[i].position % mapLength == 0) {
+                                            object = new JSONObject();
+                                            object.put("event", "lapEnd");
+                                            System.out.println("SENDING LAP COMPLETE -----------------------------------------------------------------------");
+                                            users[i].conn.send(object.toString());
+                                        }
+                                        break;
+                                    }
                                 }
                             }
                             break;
@@ -235,6 +267,19 @@ public class ServerController {
                         case "startRace":
                             sendStartMessage();
                             break;
+                        case "bestLap":
+                            System.out.println("RECIEVED NEW LAPTIME: " + object.getLong("time") + "    _-------------------------------------------------------------------------------------------------------------------------");
+                            if(object.getLong("time") < Double.valueOf(lapTime.getText())){
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        lapTime.setText(""+object.getDouble("time"));
+                                        userBestLap.setText(object.getString("user"));
+                                    }
+                                });
+                            }
+                            break;
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -445,7 +490,6 @@ public class ServerController {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                user.position++;
                 System.out.println( user.position + "        "  + Math.abs(user.position)%mapLength + "=============================================================================" + mapLength + "     " + mapCoords.length);
                 //System.out.println(user.position + "    " + mapCoords[user.position]);
                 int x = Integer.valueOf(mapCoords[Math.abs(user.position)%mapLength].split(":")[0]);
@@ -521,7 +565,7 @@ public class ServerController {
 
     public void sendStartMessage(){
         Timer timer = new Timer();
-        timer.schedule(new Countdown(5), 0, 1);
+        timer.schedule(new Countdown(5), 0, 1000);
     }
 
     public void constructIDList(JSONObject idlist){
@@ -596,7 +640,10 @@ public class ServerController {
             time--;
             server.broadcast(object.toString());
             if(time == 0){
-                server.broadcast("{\"event\": \"start\"}");
+                object = new JSONObject();
+                object.put("event", "countdown");
+                object.put("time", time);
+                server.broadcast(object.toString());
                 this.cancel();
             }
         }
