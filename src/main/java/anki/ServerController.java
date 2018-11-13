@@ -4,9 +4,11 @@ import anki.User;
 
 import de.adesso.anki.roadmap.roadpieces.Roadpiece;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -24,6 +26,8 @@ import java.util.*;
 
 
 public class ServerController {
+
+    private int lapWins;
 
     /*
 
@@ -98,6 +102,9 @@ public class ServerController {
     @FXML
     private Label lapTime, userBestLap;
 
+    @FXML
+    private TextField ipName, lapTotal;
+
     private ImageView views[];
 
 
@@ -113,15 +120,46 @@ public class ServerController {
     @FXML
     public void initialize(){
         lapTime.setText(""+ Long.MAX_VALUE);
+        lapTime.setVisible(false);
     }
 
     public ServerController() {
         users = new User[4];
         //setLabelArrays();
-        launchServer();
+        //launchServer();
 
     }
+    public void setIP(ActionEvent event) {
+        this.address = new InetSocketAddress(ipName.getText(), 5023);
+        launchServer();
+    }
 
+    public void setLapWins(ActionEvent event){
+        try{
+            lapWins = Integer.valueOf(lapTotal.getText());
+        }catch (Exception e){
+            System.out.println("invalid input");
+        }
+    }
+
+    public void resetGame(ActionEvent event){
+        userBestLap.setText("");
+        lapTime.setText("" + Double.MAX_VALUE);
+        lapTime.setVisible(false);
+        for(int i = 0; i < 4; i++){
+            if(users[i] != null){
+                users[i].position = 0;
+                renderCarLocation(userCars[i], users[i]);
+            }
+        }
+    }
+
+    public void gameOver(String winner){
+        JSONObject object = new JSONObject();
+        object.put("event", "gameOver");
+        object.put("winner", winner);
+        server.broadcast(object.toString());
+    }
 
     public void launchServer(){
         //user1.setText("test");
@@ -244,6 +282,10 @@ public class ServerController {
                                             object.put("event", "lapEnd");
                                             System.out.println("SENDING LAP COMPLETE -----------------------------------------------------------------------");
                                             users[i].conn.send(object.toString());
+                                            users[i].setLapNum();
+                                            if(users[i].getLapNum() == lapWins){
+                                                gameOver(users[i].getName());
+                                            }
                                         }
                                         break;
                                     }
@@ -274,6 +316,7 @@ public class ServerController {
                                     @Override
                                     public void run() {
                                         lapTime.setText(""+object.getDouble("time"));
+                                        lapTime.setVisible(true);
                                         userBestLap.setText(object.getString("user"));
                                     }
                                 });
@@ -624,7 +667,6 @@ public class ServerController {
             //add more if i can remember to.
         }
     }
-
 
     class Countdown extends TimerTask{
         int time;

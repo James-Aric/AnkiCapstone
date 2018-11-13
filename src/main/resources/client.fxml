@@ -11,9 +11,9 @@
 
 <AnchorPane fx:id="anchor" prefHeight="456.0" prefWidth="752.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="anki.GUI">
    <children>
-      <TextField fx:id="input" layoutX="264.0" layoutY="57.0" />
-      <Button fx:id="connect" focusTraversable="false" layoutX="118.0" layoutY="57.0" onAction="#searchForCars" text="Search for Cars" />
-      <VBox fx:id="foundCarsBox" layoutX="128.0" layoutY="129.0" prefHeight="200.0" prefWidth="100.0">
+      <TextField fx:id="input" layoutX="149.0" layoutY="57.0" />
+      <Button fx:id="connect" focusTraversable="false" layoutX="14.0" layoutY="57.0" onAction="#searchForCars" text="Search for Cars" />
+      <VBox fx:id="foundCarsBox" layoutX="33.0" layoutY="128.0" prefHeight="200.0" prefWidth="100.0">
          <children>
             <Button fx:id="groundShock" mnemonicParsing="false" text="Ground Shock" visible="false" />
             <Button fx:id="nuke" mnemonicParsing="false" text="Nuke" visible="false" />
@@ -23,7 +23,7 @@
          </children>
       </VBox>
       <Label fx:id="playerLabel" layoutX="576.0" layoutY="25.0" prefHeight="16.0" prefWidth="129.0" text="Player count: " />
-      <Label fx:id="countdownLabel" layoutX="251.0" layoutY="160.0" prefHeight="98.0" prefWidth="197.0">
+      <Label fx:id="countdownLabel" layoutX="154.0" layoutY="162.0" prefHeight="200.0" prefWidth="344.0" textAlignment="CENTER">
          <font>
             <Font name="System Bold" size="63.0" />
          </font>

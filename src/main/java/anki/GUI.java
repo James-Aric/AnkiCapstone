@@ -386,4 +386,10 @@ public class GUI implements KeyListener {
         previousLap = currentLap/1000;
         startTime = (double)System.currentTimeMillis();
     }
+
+    public void endGame(String winner){
+        connectCars.gs.sendMessage(new SetSpeedMessage(0, 5000));
+        playable = false;
+        countdownLabel.setText("WINNER:\n"+winner);
+    }
 }

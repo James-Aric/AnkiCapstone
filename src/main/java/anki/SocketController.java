@@ -1,5 +1,6 @@
 package anki;
 import de.adesso.anki.Vehicle;
+import de.adesso.anki.messages.SetSpeedMessage;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONException;
@@ -66,6 +67,9 @@ public class SocketController {
                         case "lapEnd":
                             System.out.println("calculating lap time!!!!!!!!!!!!!----------------------------------------------------------------------------");
                             gui.calculateLapTime((double)System.currentTimeMillis());
+                            break;
+                        case "gameOver":
+                            gui.endGame(object.getString("winner"));
                     }
                 } catch (Exception ignored) {
                     ignored.printStackTrace();

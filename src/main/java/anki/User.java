@@ -35,8 +35,8 @@ public class User {
     public int getLapNum(){
         return lapNum;
     }
-    public void setLapNum(int laps){
-        this.lapNum = laps;
+    public void setLapNum(){
+        this.lapNum++;
     }
 
     public void setRacePosition(String x){
