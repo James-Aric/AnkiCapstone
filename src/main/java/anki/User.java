@@ -2,6 +2,7 @@ package anki;
 
 import de.adesso.anki.Vehicle;
 import de.adesso.anki.roadmap.roadpieces.Roadpiece;
+import javafx.application.Platform;
 import javafx.scene.control.Label;
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
@@ -14,12 +15,12 @@ public class User {
     //static int racePosition;
     CustomRoadpiece roadpiece;
     private int lapNum;
-    Label vehicle, username, speed, racePosition;
+    Label vehicle, username, speed, racePosition, laps;
     boolean ready;
     long bestLapTime;
 
 
-    public User(int position, WebSocket client, Label speed, Label racePosition, Label vehicle, Label username){
+    public User(int position, WebSocket client, Label speed, Label racePosition, Label vehicle, Label username, Label laps){
         this.vehicle = vehicle;
         this.position = position;
         this.conn = client;
@@ -30,6 +31,7 @@ public class User {
         this.username = username;
         this.ready = false;
         bestLapTime = -1;
+        this.laps = laps;
     }
 
     public int getLapNum(){
@@ -37,6 +39,12 @@ public class User {
     }
     public void setLapNum(){
         this.lapNum++;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                laps.setText(""+lapNum);
+            }
+        });
     }
 
     public void setRacePosition(String x){

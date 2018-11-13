@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -60,7 +61,7 @@ public class ServerController {
     @FXML
     private Label user1direction;
     @FXML
-    private Label user1position;
+    private Label user1laps;
 
 
     @FXML
@@ -72,7 +73,7 @@ public class ServerController {
     @FXML
     private Label user2direction;
     @FXML
-    private Label user2position;
+    private Label user2laps;
 
     @FXML
     private Label user3;
@@ -83,7 +84,7 @@ public class ServerController {
     @FXML
     private Label user3direction;
     @FXML
-    private Label user3position;
+    private Label user3laps;
 
     @FXML
     private Label user4;
@@ -94,13 +95,13 @@ public class ServerController {
     @FXML
     private Label user4direction;
     @FXML
-    private Label user4position;
+    private Label user4laps;
 
     @FXML
     private GridPane grid;
 
     @FXML
-    private Label lapTime, userBestLap;
+    private Label lapTime, userBestLap, lapsWinLabel;
 
     @FXML
     private TextField ipName, lapTotal;
@@ -131,12 +132,22 @@ public class ServerController {
     }
     public void setIP(ActionEvent event) {
         this.address = new InetSocketAddress(ipName.getText(), 5023);
+        ((Button)event.getSource()).setVisible(false);
+        ipName.setVisible(false);
         launchServer();
     }
 
     public void setLapWins(ActionEvent event){
         try{
             lapWins = Integer.valueOf(lapTotal.getText());
+            lapTotal.setVisible(false);
+            ((Button)event.getSource()).setVisible(false);
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    lapsWinLabel.setText(""+lapWins);
+                }
+            });
         }catch (Exception e){
             System.out.println("invalid input");
         }
@@ -208,7 +219,7 @@ public class ServerController {
                                                 temp[1].setText(vehicle);
                                             }
                                         });
-                                        users[i] = new User(0, conn, temp[2], temp[3],temp[1],temp[0]);
+                                        users[i] = new User(0, conn, temp[2], temp[3],temp[1],temp[0], temp[4]);
                                         setVehicle(data.getString("vehicle"), i);
                                         if(map == null){
                                             object = new JSONObject();
@@ -283,6 +294,7 @@ public class ServerController {
                                             System.out.println("SENDING LAP COMPLETE -----------------------------------------------------------------------");
                                             users[i].conn.send(object.toString());
                                             users[i].setLapNum();
+
                                             if(users[i].getLapNum() == lapWins){
                                                 gameOver(users[i].getName());
                                             }
@@ -301,7 +313,7 @@ public class ServerController {
                                     playerCount++;
                                     JSONObject ready = new JSONObject();
                                     ready.put("event", "playerCount");
-                                    ready.put("playerCount", playerCount);
+                                    ready.put("players", playerCount);
                                     server.broadcast(ready.toString());
                                 }
                             }
@@ -400,24 +412,28 @@ public class ServerController {
                 labels[1] = user1vehicle;
                 labels[2] = user1speed;
                 labels[3] = user1direction;
+                labels[4] = user1laps;
                 break;
             case 1:
                 labels[0] = user2;
                 labels[1] = user2vehicle;
                 labels[2] = user2speed;
                 labels[3] = user2direction;
+                labels[4] = user2laps;
             break;
             case 2:
                 labels[0] = user3;
                 labels[1] = user3vehicle;
                 labels[2] = user3speed;
                 labels[3] = user3direction;
+                labels[4] = user3laps;
                 break;
             case 3:
                 labels[0] = user4;
                 labels[1] = user4vehicle;
                 labels[2] = user4speed;
                 labels[3] = user4direction;
+                labels[4] = user4laps;
                 break;
         }
         return labels;

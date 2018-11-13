@@ -392,6 +392,11 @@ public class GUI implements KeyListener {
     public void endGame(String winner){
         connectCars.gs.sendMessage(new SetSpeedMessage(0, 5000));
         playable = false;
-        countdownLabel.setText("WINNER:\n"+winner);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                countdownLabel.setText("WINNER:\n"+winner);
+            }
+        });
     }
 }
