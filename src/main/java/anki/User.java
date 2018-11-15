@@ -47,6 +47,16 @@ public class User {
         });
     }
 
+    public void resetLaps(){
+        this.lapNum = 0;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                laps.setText(""+lapNum);
+            }
+        });
+    }
+
     public void setRacePosition(String x){
         this.racePosition.setText(x);
     }

@@ -1,16 +1,16 @@
 package anki;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+
 import de.adesso.anki.AnkiConnector;
 import de.adesso.anki.MessageListener;
 import de.adesso.anki.Model;
 import de.adesso.anki.NotificationListener;
 import de.adesso.anki.Vehicle;
 import de.adesso.anki.messages.*;
-import de.adesso.anki.messages.LightsPatternMessage.LightConfig;
+
 
 import java.io.IOException;
-import java.util.ArrayList;
+
 import java.util.Iterator;
 import java.util.List;
 

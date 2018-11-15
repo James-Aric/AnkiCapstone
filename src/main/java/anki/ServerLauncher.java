@@ -22,9 +22,11 @@ public class ServerLauncher extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Hello World");
-        ClassLoader loader = getClass().getClassLoader();
-        File url = new File(loader.getResource("server.fxml").getFile());
-        Parent root = FXMLLoader.load(url.toURL());
+        //ClassLoader loader = getClass().getClassLoader();
+        //File url = new File(loader.getResource("server.fxml").getFile());
+        //Parent root = FXMLLoader.load(url.toURL());
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/server.fxml"));
+        Parent root = loader.load();
         Scene scene = new Scene(root);
         scene.setFill(Paint.valueOf("#353b48"));
         primaryStage.setScene(scene);

@@ -21,6 +21,7 @@ import org.java_websocket.server.WebSocketServer;
 import org.json.JSONObject;
 import javafx.scene.control.Label;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.rmi.activation.ActivationGroup_Stub;
 import java.util.*;
@@ -37,7 +38,7 @@ public class ServerController {
 
      */
 
-    private InetSocketAddress address = new InetSocketAddress("129.3.171.208", 5023);
+    private InetSocketAddress address;// = new InetSocketAddress("129.3.171.208", 5023);
 
     private static int playerCount = 0;
 
@@ -122,6 +123,7 @@ public class ServerController {
     public void initialize(){
         lapTime.setText(""+ Long.MAX_VALUE);
         lapTime.setVisible(false);
+
     }
 
     public ServerController() {
@@ -132,6 +134,7 @@ public class ServerController {
     }
     public void setIP(ActionEvent event) {
         this.address = new InetSocketAddress(ipName.getText(), 5023);
+        //this.address = new InetSocketAddress("pi.cs.oswego.edu", 5023);
         ((Button)event.getSource()).setVisible(false);
         ipName.setVisible(false);
         launchServer();
@@ -160,6 +163,7 @@ public class ServerController {
         for(int i = 0; i < 4; i++){
             if(users[i] != null){
                 users[i].position = 0;
+                users[i].resetLaps();
                 renderCarLocation(userCars[i], users[i]);
             }
         }
@@ -174,7 +178,7 @@ public class ServerController {
 
     public void launchServer(){
         //user1.setText("test");
-
+        //InetSocketAddress address2 = new InetSocketAddress("localhost", 5023);
         server = new WebSocketServer(address) {
             @Override
             public void onOpen(WebSocket conn, ClientHandshake handshake) {
@@ -523,8 +527,8 @@ public class ServerController {
                     customMap[i] = new CustomRoadpiece(x, y, mapPieces[i], i);
                     views[i].setY(100);
                     views[i].setX(100);
-                    views[i].setFitHeight(350);
-                    views[i].setFitWidth(350);
+                    views[i].setFitHeight(200);
+                    views[i].setFitWidth(200);
                     grid.add(views[i], x, y);
                     mapCoords[i] = new String(x + ":" + y);
                     if(mapPieces[i].equals("FinishRoadpiece")){
@@ -665,20 +669,20 @@ public class ServerController {
             case "GROUNDSHOCK":
                 userCars[i] = new ImageView();
                 userCars[i].setImage(new Image("gs.jpg"));
-                userCars[i].setFitWidth(75);
-                userCars[i].setFitHeight(75);
+                userCars[i].setFitWidth(50);
+                userCars[i].setFitHeight(50);
                 break;
             case "SKULL":
                 userCars[i] = new ImageView();
                 userCars[i].setImage(new Image("skull.jpg"));
-                userCars[i].setFitWidth(75);
-                userCars[i].setFitHeight(75);
+                userCars[i].setFitWidth(50);
+                userCars[i].setFitHeight(50);
                 break;
             case "NUKE":
                 userCars[i] = new ImageView();
                 userCars[i].setImage(new Image("nuke.jpg"));
-                userCars[i].setFitWidth(75);
-                userCars[i].setFitHeight(75);
+                userCars[i].setFitWidth(50);
+                userCars[i].setFitHeight(50);
                 break;
             //add more if i can remember to.
         }
@@ -705,6 +709,10 @@ public class ServerController {
                 this.cancel();
             }
         }
+    }
+
+    public ServerController instance(){
+        return this;
     }
 }
 

@@ -11,7 +11,8 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'com.moowork.node'
-mainClassName = 'edu.oswego.cs.CPSLab.anki.Test'
+mainClassName = 'src/main/anki.Main'
+
 
 repositories {
     jcenter()
@@ -45,9 +46,18 @@ task fatJar(type: Jar) {
     with jar
 }
 
-task server(type: NodeTask) {
+task nodeServer(type: NodeTask) {
     script = file('src/main/nodejs/server.js')
     ignoreExitValue = true
 }
 
-processResources.dependsOn(['npmInstall'])
+task client << {
+    javaexec {main='-jar'; args "out/artifacts/AnkiCapstone_jar/AnkiClient.jar"}
+}
+
+task server << {
+    javaexec {main='-jar'; args "out/artifacts/AnkiCapstone_jar2/AnkiServer.jar"}
+}
+
+
+//processResources.dependsOn(['npmInstall'])

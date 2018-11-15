@@ -140,9 +140,6 @@ public class GUI implements KeyListener {
             positionListener = (message) -> positionUpdate(message);
             transitionListener = (message) -> transitionUpdate(message);
             user = input.getText();
-            controller.address = ipInput.getText();
-            ipInput.setVisible(false);
-            ipPrompt.setVisible(false);
         }
         catch (NullPointerException ex){
 
@@ -152,7 +149,10 @@ public class GUI implements KeyListener {
             connectCars.connect(model);
             controller = new SocketController(user, connectCars.gs, this);
             scanner = new CustomScanner(connectCars.gs, controller);
-
+            controller.address = ipInput.getText();
+            controller.address = ipInput.getText();
+            ipInput.setVisible(false);
+            ipPrompt.setVisible(false);
             controller.connectSocket();
 
             input.setVisible(false);
