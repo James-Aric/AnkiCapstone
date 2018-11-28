@@ -16,7 +16,7 @@ public class SocketController {
         CHANGE THIS TO MATCH SERVER IP
 
      */
-    static String address = "129.3.171.65";
+    static String address;// = "129.3.171.65";
 
 
     static String username;
@@ -26,9 +26,10 @@ public class SocketController {
     static JSONObject data;
 
 
-    public SocketController(String username, Vehicle vehicle, GUI gui) throws URISyntaxException{
+    public SocketController(String username, Vehicle vehicle, GUI gui, String address) throws URISyntaxException{
         this.username = username;
         this.vehicle = vehicle;
+        this.address = address;
         client = new WebSocketClient(new URI("ws://" + address + ":5023")) {
             @Override
             public void onOpen(ServerHandshake serverHandshake) {

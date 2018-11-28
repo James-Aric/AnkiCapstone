@@ -16,6 +16,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.java_websocket.WebSocket;
+import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.json.JSONObject;
@@ -201,6 +202,7 @@ public class ServerController {
                 try {
                     object = new JSONObject(message);
                     data = null;
+                    String user, vehicle;
                     try{
                         data = object.getJSONObject("data");
                     }catch (Exception e){
@@ -209,39 +211,7 @@ public class ServerController {
                     //System.out.println(data.toString());
                     switch (object.getString("event")) {
                         case "connect":
-                            String user = data.getString("username");
-                            String vehicle = data.getString("vehicle");
-                            System.out.println("PLAYER: " + user + " CONNECTED ON VEHICLE " + vehicle);
-                            if (playerCount != 4) {
-                                for (int i = 0; i < 4; i++) {
-                                    if (users[i] == null) {
-                                        Label[] temp = returnUserData(i);
-                                        Platform.runLater(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                temp[0].setText(user);
-                                                temp[1].setText(vehicle);
-                                            }
-                                        });
-                                        users[i] = new User(0, conn, temp[2], temp[3],temp[1],temp[0], temp[4]);
-                                        setVehicle(data.getString("vehicle"), i);
-                                        if(map == null){
-                                            object = new JSONObject();
-                                            object.put("event", "scan");
-                                            conn.send(object.toString());
-                                        }
-                                        else{
-                                            renderCarLocation(userCars[i], users[i]);
-                                        }
-                                        //newUserData(i, data);
-
-
-                                        break;
-                                    }
-                                }
-                            } else {
-                                this.broadcast("full");
-                            }
+                            addPlayer(data, conn);
                             break;
                         case "disconnect":
                             user = data.getString("username");
@@ -362,15 +332,53 @@ public class ServerController {
         //user1.setText("test");
     }
 
+    public boolean addPlayer(JSONObject object, WebSocket conn){
+        String user = object.getString("username");
+        String vehicle = object.getString("vehicle");
+        System.out.println("PLAYER: " + user + " CONNECTED ON VEHICLE " + vehicle);
+        if (playerCount != 4) {
+            for (int i = 0; i < 4; i++) {
+                if (users[i] == null) {
+                    Label[] temp = returnUserData(i);
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            temp[0].setText(user);
+                            temp[1].setText(vehicle);
+                        }
+                    });
+                    users[i] = new User(0, conn, temp[2], temp[3],temp[1],temp[0], temp[4]);
 
-    public void removePlayer(String name){
+                    setVehicle(vehicle, i);
+                    if(map == null){
+                        object = new JSONObject();
+                        object.put("event", "scan");
+                        conn.send(object.toString());
+                        return true;
+                    }
+                    else{
+                        renderCarLocation(userCars[i], users[i]);
+                        return true;
+                    }
+                }
+            }
+        } else {
+            this.server.broadcast("full");
+            return false;
+        }
+        return false;
+
+    }
+
+    public boolean removePlayer(String name){
         for(int i = 0; i < 4; i++){
             if(users[i].getName().equals(name)){
                 users[i].removeThisPlayer();
                 users[i] = null;
-                break;
+                return true;
             }
         }
+        return false;
     }
 
 
@@ -400,13 +408,23 @@ public class ServerController {
         });
     }*/
 
-    public void setUserData(User u, JSONObject data){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                u.setSpeed(""+data.getInt("speed"));
-            }
-        });
+    public boolean setUserData(User u, JSONObject data){
+        try {
+            int x = data.getInt("speed");
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    u.setSpeed("" + x);
+                }
+
+            });
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+        finally {
+            return false;
+        }
     }
     public Label[] returnUserData(int location){
         Label[] labels = new Label[5];
@@ -713,6 +731,10 @@ public class ServerController {
 
     public ServerController instance(){
         return this;
+    }
+
+    public User getUser(int i){
+        return users[i];
     }
 }
 

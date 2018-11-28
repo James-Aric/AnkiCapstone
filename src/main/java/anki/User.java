@@ -57,17 +57,44 @@ public class User {
         });
     }
 
-    public void setRacePosition(String x){
-        this.racePosition.setText(x);
+    public boolean setRacePosition(String x){
+        try{
+            int test = Integer.valueOf(x);
+            this.racePosition.setText(x);
+        }
+        catch (Exception e){
+            return false;
+        }
+        finally {
+            return false;
+        }
     }
-    public void setVehicle(String x){
-        this.vehicle.setText(x);
+    public boolean setVehicle(String x){
+        if(x != null && !x.equals("")){
+            this.vehicle.setText(x);
+            return true;
+        }
+        return false;
+
     }
-    public void setUsername(String x){
-        this.username.setText(x);
+    public boolean setUsername(String x){
+        if(x != null && !x.equals("")){
+            this.username.setText(x);
+            return true;
+        }
+        return false;
     }
-    public void setSpeed(String x){
-        this.speed.setText(x);
+    public boolean setSpeed(String x){
+        try{
+            int test = Integer.valueOf(x);
+            this.speed.setText(x);
+        }
+        catch (Exception e){
+            return false;
+        }
+        finally {
+            return false;
+        }
     }
 
     public String getName(){

@@ -36,8 +36,8 @@ node {
   distBaseUrl = 'https://nodejs.org/dist'
   download = true
 
-  workDir = file("${project.buildDir}/nodejs")
-  nodeModulesDir = file("${project.projectDir}")
+  workDir = file('src/main/nodejs')
+  nodeModulesDir = file('node_modules')
 }
 
 task fatJar(type: Jar) {
@@ -47,6 +47,8 @@ task fatJar(type: Jar) {
 }
 
 task nodeServer(type: NodeTask) {
+    //processResources.dependsOn(['npmInstall'])
+    //processResources.dependsOn(['npmInstall bluetooth-hci-socket'])
     script = file('src/main/nodejs/server.js')
     ignoreExitValue = true
 }
@@ -60,4 +62,4 @@ task server << {
 }
 
 
-//processResources.dependsOn(['npmInstall'])
+

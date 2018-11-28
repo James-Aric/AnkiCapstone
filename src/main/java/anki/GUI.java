@@ -147,10 +147,9 @@ public class GUI implements KeyListener {
         try {
 
             connectCars.connect(model);
-            controller = new SocketController(user, connectCars.gs, this);
+            controller = new SocketController(user, connectCars.gs, this, ipInput.getText());
             scanner = new CustomScanner(connectCars.gs, controller);
-            controller.address = ipInput.getText();
-            controller.address = ipInput.getText();
+            //controller.address = ipInput.getText();
             ipInput.setVisible(false);
             ipPrompt.setVisible(false);
             controller.connectSocket();
