@@ -23,131 +23,13 @@ public class ServerControllerTest {
     WebSocket conn;
     User u;
 
+    public ServerControllerTest(ServerController controller){
+        this.controller = controller;
+    }
+
     @Before
     public void setup(){
-        controller = new ServerController();
-        conn = new WebSocket() {
-            @Override
-            public void close(int code, String message) {
 
-            }
-
-            @Override
-            public void close(int code) {
-
-            }
-
-            @Override
-            public void close() {
-
-            }
-
-            @Override
-            public void closeConnection(int code, String message) {
-
-            }
-
-            @Override
-            public void send(String text) throws NotYetConnectedException {
-
-            }
-
-            @Override
-            public void send(ByteBuffer bytes) throws IllegalArgumentException, NotYetConnectedException {
-
-            }
-
-            @Override
-            public void send(byte[] bytes) throws IllegalArgumentException, NotYetConnectedException {
-
-            }
-
-            @Override
-            public void sendFrame(Framedata framedata) {
-
-            }
-
-            @Override
-            public void sendFrame(Collection<Framedata> frames) {
-
-            }
-
-            @Override
-            public void sendPing() throws NotYetConnectedException {
-
-            }
-
-            @Override
-            public void sendFragmentedFrame(Framedata.Opcode op, ByteBuffer buffer, boolean fin) {
-
-            }
-
-            @Override
-            public boolean hasBufferedData() {
-                return false;
-            }
-
-            @Override
-            public InetSocketAddress getRemoteSocketAddress() {
-                return null;
-            }
-
-            @Override
-            public InetSocketAddress getLocalSocketAddress() {
-                return null;
-            }
-
-            @Override
-            public boolean isConnecting() {
-                return false;
-            }
-
-            @Override
-            public boolean isOpen() {
-                return false;
-            }
-
-            @Override
-            public boolean isClosing() {
-                return false;
-            }
-
-            @Override
-            public boolean isFlushAndClose() {
-                return false;
-            }
-
-            @Override
-            public boolean isClosed() {
-                return false;
-            }
-
-            @Override
-            public Draft getDraft() {
-                return null;
-            }
-
-            @Override
-            public READYSTATE getReadyState() {
-                return null;
-            }
-
-            @Override
-            public String getResourceDescriptor() {
-                return null;
-            }
-
-            @Override
-            public <T> void setAttachment(T attachment) {
-
-            }
-
-            @Override
-            public <T> T getAttachment() {
-                return null;
-            }
-        };
-        u = new User(0, conn, new Label(), new Label(), new Label(), new Label(), new Label());
     }
 
     @Test
@@ -163,7 +45,15 @@ public class ServerControllerTest {
         JSONObject data = new JSONObject();
         data.put("username", "test");
         data.put("vehicle", "test");
-        controller.addPlayer(data, conn);
+        Assert.assertTrue(controller.addPlayer(data, controller.connTest));
+        data = new JSONObject();
+        data.put("username", "");
+        data.put("vehicle", "");
+        Assert.assertTrue(controller.addPlayer(data, controller.connTest));
+        data = new JSONObject();
+        data.put("username", (String)null);
+        data.put("vehicle", (String)null);
+        Assert.assertFalse(controller.addPlayer(data, controller.connTest));
     }
 
     @Test

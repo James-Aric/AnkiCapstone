@@ -21,6 +21,7 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.json.JSONObject;
 import javafx.scene.control.Label;
+import tests.ServerControllerTest;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -29,6 +30,8 @@ import java.util.*;
 
 
 public class ServerController {
+
+    private boolean testing = true;
 
     private int lapWins;
 
@@ -119,6 +122,10 @@ public class ServerController {
     private WebSocketServer server;
     private String currentUser;
     private String currentVehicle;
+    public WebSocket connTest;
+
+
+    ServerControllerTest tests;
 
     @FXML
     public void initialize(){
@@ -131,6 +138,9 @@ public class ServerController {
         users = new User[4];
         //setLabelArrays();
         //launchServer();
+        if(testing){
+            tests = new ServerControllerTest(this);
+        }
 
     }
     public void setIP(ActionEvent event) {
@@ -211,7 +221,13 @@ public class ServerController {
                     //System.out.println(data.toString());
                     switch (object.getString("event")) {
                         case "connect":
-                            addPlayer(data, conn);
+                            if(testing){
+                                connTest = conn;
+                                tests.addPlayer();
+                            }
+                            else {
+                                addPlayer(data, conn);
+                            }
                             break;
                         case "disconnect":
                             user = data.getString("username");
@@ -329,6 +345,7 @@ public class ServerController {
         server.setReuseAddr(true);
         server.start();
         System.out.println("Server started on " + server.getAddress());
+
         //user1.setText("test");
     }
 
