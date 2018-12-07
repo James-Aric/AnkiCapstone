@@ -35,7 +35,7 @@
                   <Insets bottom="20.0" />
                </padding>
             </Label>
-            <Label fx:id="pieceID" text="TEST">
+            <Label fx:id="lapsLabel" text="TEST">
                <padding>
                   <Insets bottom="20.0" />
                </padding>
@@ -71,7 +71,7 @@
                   <Insets bottom="20.0" />
                </padding>
             </Label>
-            <Label text="Roadpiece:">
+            <Label text="Laps:">
                <padding>
                   <Insets bottom="20.0" />
                </padding>

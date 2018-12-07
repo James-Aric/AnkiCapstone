@@ -1,9 +1,14 @@
 package tests;
 
+import anki.ServerController;
+import anki.ServerLauncher;
 import anki.User;
+import javafx.application.Application;
 import javafx.scene.control.Label;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,78 +20,89 @@ import static org.junit.Assert.*;
 
 public class UserTest {
     User test;
+    ServerController controller = new ServerController();
+    ServerLauncher launcher;
     @Before
     public void setup() throws URISyntaxException {
-        test = new User(1, new WebSocketClient(new URI("boop")) {
-            @Override
-            public void onOpen(ServerHandshake handshakedata) {
+        launcher = new ServerLauncher();
+        Label[] temp = controller.returnUserData(0);
+        test = new User(1, null, temp[2], temp[3],temp[1],temp[0], temp[4], "controller.getUser(0)");
+        Thread thread = new Thread(){
+            public void run(){
+                try{
+                    Application.launch(ServerLauncher.class);
+                }catch (Exception e){
 
+                }
             }
-
-            @Override
-            public void onMessage(String message) {
-
-            }
-
-            @Override
-            public void onClose(int code, String reason, boolean remote) {
-
-            }
-
-            @Override
-            public void onError(Exception ex) {
-
-            }
-        }, new Label(), new Label(), new Label(), new Label(), new Label());
+        };
+        thread.setDaemon(true);
+        thread.start();
+        try {
+            Thread.sleep(3000);  // Wait for 3 seconds before interrupting JavaFX application
+        } catch(InterruptedException ex) {
+            // We don't care if we wake up early.
+        }
+        thread.interrupt();
+        try {
+            thread.join(1); // Wait 1 second for our wrapper thread to finish.
+        } catch(InterruptedException ex) {
+            // We don't care if we wake up early.
+        }
+        controller = launcher.controller;
+        JSONObject data = new JSONObject();
+        data.put("username", "test");
+        data.put("vehicle", "test");
+        controller.addPlayer(data, null);
     }
 
     @Test
     public void setRacePositionTest() {
-        Assert.assertTrue(test.setRacePosition("1"));
-        Assert.assertTrue(test.setRacePosition("2"));
-        Assert.assertTrue(test.setRacePosition("3"));
-        Assert.assertTrue(test.setRacePosition("4"));
-        Assert.assertFalse(test.setRacePosition("poop"));
-        Assert.assertFalse(test.setRacePosition(" "));
-        Assert.assertFalse(test.setRacePosition(null));
-        Assert.assertFalse(test.setRacePosition(""));
+        Assert.assertTrue(controller.getUser(0).setRacePosition("1"));
+        Assert.assertTrue(controller.getUser(0).setRacePosition("2"));
+        Assert.assertTrue(controller.getUser(0).setRacePosition("3"));
+        Assert.assertTrue(controller.getUser(0).setRacePosition("4"));
+        Assert.assertFalse(controller.getUser(0).setRacePosition("poop"));
+        Assert.assertFalse(controller.getUser(0).setRacePosition(" "));
+        Assert.assertFalse(controller.getUser(0).setRacePosition(null));
+        Assert.assertFalse(controller.getUser(0).setRacePosition(""));
 
     }
 
     @Test
     public void setVehicle() {
-        Assert.assertTrue(test.setVehicle("1"));
-        Assert.assertTrue(test.setVehicle("2"));
-        Assert.assertTrue(test.setVehicle("3"));
-        Assert.assertTrue(test.setVehicle("4"));
-        Assert.assertTrue(test.setVehicle("poop"));
-        Assert.assertFalse(test.setVehicle(" "));
-        Assert.assertFalse(test.setVehicle(null));
-        Assert.assertFalse(test.setVehicle(""));
+        Assert.assertTrue(controller.getUser(0).setVehicle("1"));
+        Assert.assertTrue(controller.getUser(0).setVehicle("2"));
+        Assert.assertTrue(controller.getUser(0).setVehicle("3"));
+        Assert.assertTrue(controller.getUser(0).setVehicle("4"));
+        Assert.assertTrue(controller.getUser(0).setVehicle("poop"));
+        Assert.assertFalse(controller.getUser(0).setVehicle(" "));
+        Assert.assertFalse(controller.getUser(0).setVehicle(null));
+        Assert.assertFalse(controller.getUser(0).setVehicle(""));
     }
 
     @Test
     public void setUsername() {
-        Assert.assertTrue(test.setUsername("1"));
-        Assert.assertTrue(test.setUsername("2"));
-        Assert.assertTrue(test.setUsername("3"));
-        Assert.assertTrue(test.setUsername("4"));
-        Assert.assertTrue(test.setUsername("poop"));
-        Assert.assertFalse(test.setUsername(" "));
-        Assert.assertFalse(test.setUsername(null));
-        Assert.assertFalse(test.setUsername(""));
+        Assert.assertTrue(controller.getUser(0).setUsername("1"));
+        Assert.assertTrue(controller.getUser(0).setUsername("2"));
+        Assert.assertTrue(controller.getUser(0).setUsername("3"));
+        Assert.assertTrue(controller.getUser(0).setUsername("4"));
+        Assert.assertTrue(controller.getUser(0).setUsername("poop"));
+        Assert.assertFalse(controller.getUser(0).setUsername(" "));
+        Assert.assertFalse(controller.getUser(0).setUsername(null));
+        Assert.assertFalse(controller.getUser(0).setUsername(""));
     }
 
     @Test
     public void setSpeed() {
-        Assert.assertTrue(test.setSpeed("1"));
-        Assert.assertTrue(test.setSpeed("2"));
-        Assert.assertTrue(test.setSpeed("3"));
-        Assert.assertTrue(test.setSpeed("4"));
-        Assert.assertTrue(test.setSpeed("1001230"));
-        Assert.assertFalse(test.setSpeed("poop"));
-        Assert.assertFalse(test.setSpeed(" "));
-        Assert.assertFalse(test.setSpeed(null));
-        Assert.assertFalse(test.setSpeed(""));
+        Assert.assertTrue(controller.getUser(0).setSpeed("1"));
+        Assert.assertTrue(controller.getUser(0).setSpeed("2"));
+        Assert.assertTrue(controller.getUser(0).setSpeed("3"));
+        Assert.assertTrue(controller.getUser(0).setSpeed("4"));
+        Assert.assertTrue(controller.getUser(0).setSpeed("1001230"));
+        Assert.assertFalse(controller.getUser(0).setSpeed("poop"));
+        Assert.assertFalse(controller.getUser(0).setSpeed(" "));
+        Assert.assertFalse(controller.getUser(0).setSpeed(null));
+        Assert.assertFalse(controller.getUser(0).setSpeed(""));
     }
 }

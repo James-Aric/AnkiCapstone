@@ -19,6 +19,7 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.json.JSONException;
 import org.json.JSONObject;
 import javafx.scene.control.Label;
 import tests.ServerControllerTest;
@@ -129,8 +130,6 @@ public class ServerController {
 
     @FXML
     public void initialize(){
-        lapTime.setText(""+ Long.MAX_VALUE);
-        lapTime.setVisible(false);
 
     }
 
@@ -138,9 +137,6 @@ public class ServerController {
         users = new User[4];
         //setLabelArrays();
         //launchServer();
-        if(testing){
-            tests = new ServerControllerTest(this);
-        }
 
     }
     public void setIP(ActionEvent event) {
@@ -195,7 +191,6 @@ public class ServerController {
             public void onOpen(WebSocket conn, ClientHandshake handshake) {
                 /*Users = new User[4];*/
                 System.out.println("NEW CONNECTION");
-
             }
 
             @Override
@@ -221,13 +216,11 @@ public class ServerController {
                     //System.out.println(data.toString());
                     switch (object.getString("event")) {
                         case "connect":
-                            if(testing){
-                                connTest = conn;
-                                tests.addPlayer();
-                            }
-                            else {
-                                addPlayer(data, conn);
-                            }
+                            addPlayer(data, conn);
+                            JSONObject lapsToWin = new JSONObject();
+                            lapsToWin.put("event", "lapWins");
+                            lapsToWin.put("laps", lapWins);
+                            conn.send(lapsToWin.toString());
                             break;
                         case "disconnect":
                             user = data.getString("username");
@@ -350,37 +343,46 @@ public class ServerController {
     }
 
     public boolean addPlayer(JSONObject object, WebSocket conn){
-        String user = object.getString("username");
-        String vehicle = object.getString("vehicle");
-        System.out.println("PLAYER: " + user + " CONNECTED ON VEHICLE " + vehicle);
-        if (playerCount != 4) {
-            for (int i = 0; i < 4; i++) {
-                if (users[i] == null) {
-                    Label[] temp = returnUserData(i);
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            temp[0].setText(user);
-                            temp[1].setText(vehicle);
+        try {
+            String user = object.getString("username");
+            String vehicle = object.getString("vehicle");
+            System.out.println("PLAYER: " + user + " CONNECTED ON VEHICLE " + vehicle);
+            if (playerCount != 4) {
+                for (int i = 0; i < 4; i++) {
+                    if (users[i] == null) {
+                        Label[] temp = returnUserData(i);
+                        if (user.equals(null) || vehicle.equals(null)) {
+                            return false;
                         }
-                    });
-                    users[i] = new User(0, conn, temp[2], temp[3],temp[1],temp[0], temp[4]);
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                temp[0].setText(user);
+                                temp[1].setText(vehicle);
 
-                    setVehicle(vehicle, i);
-                    if(map == null){
-                        object = new JSONObject();
-                        object.put("event", "scan");
-                        conn.send(object.toString());
-                        return true;
-                    }
-                    else{
-                        renderCarLocation(userCars[i], users[i]);
-                        return true;
+                            }
+                        });
+                        users[i] = new User(0, conn, temp[2], temp[3], temp[1], temp[0], temp[4], user);
+
+                        setVehicle(vehicle, i);
+                        if (map == null) {
+                            object = new JSONObject();
+                            object.put("event", "scan");
+                            if (!testing) {
+                                conn.send(object.toString());
+                            }
+                            return true;
+                        } else {
+                            renderCarLocation(userCars[i], users[i]);
+                            return true;
+                        }
                     }
                 }
+            } else {
+                this.server.broadcast("full");
+                return false;
             }
-        } else {
-            this.server.broadcast("full");
+        }catch (JSONException e){
             return false;
         }
         return false;
@@ -389,7 +391,7 @@ public class ServerController {
 
     public boolean removePlayer(String name){
         for(int i = 0; i < 4; i++){
-            if(users[i].getName().equals(name)){
+            if(users[i] != null && users[i].getUser().equals(name)){
                 users[i].removeThisPlayer();
                 users[i] = null;
                 return true;
@@ -397,33 +399,6 @@ public class ServerController {
         }
         return false;
     }
-
-
-    /*public void newUserData(int location, JSONObject message){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                switch(location){
-                    case 0:
-                        user1.setText(message.get("username").toString());
-                        user1vehicle.setText(message.get("vehicle").toString());
-                        break;
-                    case 1:
-                        user2.setText(message.get("username").toString());
-                        user2vehicle.setText(message.get("vehicle").toString());
-                        break;
-                    case 2:
-                        user3.setText(message.get("username").toString());
-                        user3vehicle.setText(message.get("vehicle").toString());
-                        break;
-                    case 3:
-                        user4.setText(message.get("username").toString());
-                        user4vehicle.setText(message.get("vehicle").toString());
-                        break;
-                }
-            }
-        });
-    }*/
 
     public boolean setUserData(User u, JSONObject data){
         try {
@@ -553,6 +528,9 @@ public class ServerController {
                             if(startOrEnd == -1){
                                 startOrEnd = i;
                             }
+                            if(reversed.getBoolean(String.valueOf(i))){
+                                currentEnd = 2;
+                            }
                             views[i] = new ImageView();
                             views[i].setImage(new Image("start.png"));
                             views[i].setRotate(90*(Math.abs(currentEnd%2) + 1));
@@ -652,6 +630,7 @@ public class ServerController {
                                         break;
                                 }
                                 users[i].setRacePosition(""+pos);
+                                users[i].setLabels(returnUserData(pos));
                                 break;
                             }
                         }

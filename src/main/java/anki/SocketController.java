@@ -71,6 +71,10 @@ public class SocketController {
                             break;
                         case "gameOver":
                             gui.endGame(object.getString("winner"));
+                            break;
+                        case "lapWins":
+                            gui.totalLaps = data.getInt("laps");
+                            break;
                     }
                 } catch (Exception ignored) {
                     ignored.printStackTrace();

@@ -39,6 +39,8 @@ public class GUI implements KeyListener {
     private Scene scene = null;
     //private int lights;
     private boolean lights;
+    private int laps = 0;
+    public static int totalLaps;
 
     private String user;
 
@@ -62,7 +64,7 @@ public class GUI implements KeyListener {
 
 
     @FXML
-    Label speedTest, pieceID, offset, drivingDirection, bestLap, previousLapLabel, split;
+    Label speedTest, lapsLabel, offset, bestLap, previousLapLabel, split;
 
     @FXML
     Label playerLabel, countdownLabel, ipPrompt;
@@ -197,7 +199,7 @@ public class GUI implements KeyListener {
                                 if (currentSpeed >= 50) {
                                     currentSpeed -= 50;
                                 } else {
-                                    currentSpeed -= 50;
+                                    currentSpeed = 0;
                                 }
                                 connectCars.gs.sendMessage(new SetSpeedMessage(currentSpeed, 2000));
                                 speedTest.setText("SPEED: "+ currentSpeed);
@@ -288,7 +290,6 @@ public class GUI implements KeyListener {
             @Override
             public void run() {
                 speedTest.setText("SPEED: " + message.getSpeed());
-                pieceID.setText("ROAD ID: " + message.getRoadPieceId());
                 offset.setText("OFFSET: " + message.getOffsetFromRoadCenter());
                 JSONObject object = new JSONObject();
                 JSONObject data = new JSONObject();
@@ -365,7 +366,7 @@ public class GUI implements KeyListener {
         System.out.println(startTime + "     " + newTime + "    ---------------------------------");
         System.out.println((newTime - startTime)/1000);
         double currentLap = newTime-startTime;
-
+        laps++;
         if((currentLap) < bestLapTime){
             bestLapTime = newTime-startTime;
         }
@@ -382,6 +383,7 @@ public class GUI implements KeyListener {
                 bestLap.setText(String.valueOf(bestLapTime/1000));
                 previousLapLabel.setText(String.valueOf(previousLap));
                 split.setText(String.valueOf(splitTime));
+                lapsLabel.setText(""+laps + "/" + totalLaps);
             }
         });
         previousLap = currentLap/1000;
