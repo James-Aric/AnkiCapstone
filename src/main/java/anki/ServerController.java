@@ -368,9 +368,7 @@ public class ServerController {
                         if (map == null) {
                             object = new JSONObject();
                             object.put("event", "scan");
-                            if (!testing) {
-                                conn.send(object.toString());
-                            }
+                            conn.send(object.toString());
                             return true;
                         } else {
                             renderCarLocation(userCars[i], users[i]);

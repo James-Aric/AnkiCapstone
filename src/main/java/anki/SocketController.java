@@ -63,6 +63,7 @@ public class SocketController {
                             gui.updateCountdown(object.getInt("time"));
                             break;
                         case "scan":
+                            System.out.println("RECEIVED SCAN MESSAGE");
                             gui.startScanning();
                             break;
                         case "lapEnd":
@@ -73,7 +74,7 @@ public class SocketController {
                             gui.endGame(object.getString("winner"));
                             break;
                         case "lapWins":
-                            gui.totalLaps = data.getInt("laps");
+                            gui.totalLaps = object.getInt("laps");
                             break;
                     }
                 } catch (Exception ignored) {
