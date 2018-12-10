@@ -19,11 +19,11 @@
                <children>
                   <VBox fx:id="user1box" prefHeight="274.0" prefWidth="184.0">
                      <children>
-                        <Label fx:id="user1" prefHeight="20.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user1vehicle" prefHeight="45.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user1speed" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user1laps" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user1direction" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user1" prefHeight="20.0" prefWidth="160.0" text="0" />
+                        <Label fx:id="user1vehicle" prefHeight="45.0" prefWidth="160.0" text="0" />
+                        <Label fx:id="user1speed" prefHeight="17.0" prefWidth="160.0" text="0" />
+                        <Label fx:id="user1laps" prefHeight="17.0" prefWidth="160.0" text="0" />
+                        <Label fx:id="user1direction" prefHeight="17.0" prefWidth="160.0" text="0" />
                      </children>
                      <VBox.margin>
                         <Insets />
@@ -31,11 +31,11 @@
                   </VBox>
                   <VBox fx:id="user2box" prefHeight="274.0" prefWidth="184.0">
                      <children>
-                        <Label fx:id="user2" prefHeight="20.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user2vehicle" prefHeight="45.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user2speed" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user2laps" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user2direction" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user2" prefHeight="20.0" prefWidth="160.0" text="0" />
+                        <Label fx:id="user2vehicle" prefHeight="45.0" prefWidth="160.0" text="0" />
+                        <Label fx:id="user2speed" prefHeight="17.0" prefWidth="160.0" text="0" />
+                        <Label fx:id="user2laps" prefHeight="17.0" prefWidth="160.0" text="0" />
+                        <Label fx:id="user2direction" prefHeight="17.0" prefWidth="160.0" text="0" />
                      </children>
                      <VBox.margin>
                         <Insets />
@@ -43,20 +43,20 @@
                   </VBox>
                   <VBox fx:id="user3box" prefHeight="274.0" prefWidth="184.0">
                      <children>
-                        <Label fx:id="user3" prefHeight="20.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user3vehicle" prefHeight="45.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user3speed" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user3laps" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user3direction" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user3" prefHeight="20.0" prefWidth="160.0" text="0" />
+                        <Label fx:id="user3vehicle" prefHeight="45.0" prefWidth="160.0" text="0" />
+                        <Label fx:id="user3speed" prefHeight="17.0" prefWidth="160.0" text="0" />
+                        <Label fx:id="user3laps" prefHeight="17.0" prefWidth="160.0" text="0" />
+                        <Label fx:id="user3direction" prefHeight="17.0" prefWidth="160.0" text="0" />
                      </children>
                   </VBox>
                   <VBox fx:id="user4box" prefHeight="274.0" prefWidth="184.0">
                      <children>
-                        <Label fx:id="user4" prefHeight="20.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user4vehicle" prefHeight="45.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user4speed" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user4laps" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
-                        <Label fx:id="user4direction" prefHeight="17.0" prefWidth="160.0" text="PLACEHOLDER" />
+                        <Label fx:id="user4" prefHeight="20.0" prefWidth="160.0" text="0" />
+                        <Label fx:id="user4vehicle" prefHeight="45.0" prefWidth="160.0" text="0" />
+                        <Label fx:id="user4speed" prefHeight="17.0" prefWidth="160.0" text="0" />
+                        <Label fx:id="user4laps" prefHeight="17.0" prefWidth="160.0" text="0" />
+                        <Label fx:id="user4direction" prefHeight="17.0" prefWidth="160.0" text="0" />
                      </children>
                   </VBox>
                </children>

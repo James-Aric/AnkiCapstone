@@ -264,6 +264,7 @@ public class ServerController {
                             break;
                         case "transitionUpdate":
                             if(map != null) {
+                                System.out.println("TRANSITION");
                                 for (int i = 0; i < 4; i++) {
                                     if (users[i] != null && data.getString("username").equals(users[i].getName())) {
                                         System.out.println("CAR RENDER IN PROGRESS");
@@ -306,7 +307,7 @@ public class ServerController {
                             break;
                         case "bestLap":
                             System.out.println("RECIEVED NEW LAPTIME: " + object.getLong("time") + "    _-------------------------------------------------------------------------------------------------------------------------");
-                            if(object.getLong("time") < Double.valueOf(lapTime.getText())){
+                            if(lapTime.getText().equals("") || object.getLong("time") < Double.valueOf(lapTime.getText())){
                                 Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
@@ -628,7 +629,10 @@ public class ServerController {
                                         break;
                                 }
                                 users[i].setRacePosition(""+pos);
-                                users[i].setLabels(returnUserData(pos));
+                                /*if(Integer.valueOf(users[i].racePosition.getText()) > 0) {
+                                    Label temp[] = returnUserData(pos);
+                                    users[i] = new User(0, users[i].conn, temp[2], temp[3], temp[1], temp[0], temp[4], users[i].name);
+                                }*/
                                 break;
                             }
                         }
@@ -680,7 +684,7 @@ public class ServerController {
         switch(vehicle){
             case "GROUNDSHOCK":
                 userCars[i] = new ImageView();
-                userCars[i].setImage(new Image("gs.jpg"));
+                userCars[i].setImage(new Image("gs.png"));
                 userCars[i].setFitWidth(50);
                 userCars[i].setFitHeight(50);
                 break;
@@ -692,7 +696,7 @@ public class ServerController {
                 break;
             case "NUKE":
                 userCars[i] = new ImageView();
-                userCars[i].setImage(new Image("nuke.jpg"));
+                userCars[i].setImage(new Image("nuke.png"));
                 userCars[i].setFitWidth(50);
                 userCars[i].setFitHeight(50);
                 break;
