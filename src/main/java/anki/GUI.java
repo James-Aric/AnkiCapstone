@@ -27,7 +27,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 
-public class GUI implements KeyListener {
+public class GUI {
 
     boolean playable = false;
 
@@ -131,12 +131,6 @@ public class GUI implements KeyListener {
 
     public void connect(Model model) throws URISyntaxException {
         try {
-            //speedTest.setText("500");
-            /*Node source = (Node) event.getSource();
-            scene = source.getScene();
-            stage = (Stage) scene.getWindow();*/
-            //setMap();
-            //updateMap();
             System.out.println("SCENE SET");
             System.out.println("CONNECTING INITIATED--------------------------");
             positionListener = (message) -> positionUpdate(message);
@@ -151,7 +145,6 @@ public class GUI implements KeyListener {
             connectCars.connect(model);
             controller = new SocketController(user, connectCars.gs, this, ipInput.getText());
             scanner = new CustomScanner(connectCars.gs, controller);
-            //controller.address = ipInput.getText();
             ipInput.setVisible(false);
             ipPrompt.setVisible(false);
             controller.connectSocket();
@@ -169,18 +162,12 @@ public class GUI implements KeyListener {
                 nuke.setVisible(false);
             }
 
-
-            //currentMap = scanner.getRoadmap();
             System.out.println("TEST1");
-            //System.out.println(scanner.getIdList());
-            //System.out.println(scanner.getIdList());
-            //scanner.test();
+
             System.out.println("TEST2");
-            //scanner.reset();
 
             lights = false;
             Thread.sleep(100);
-            //scanner.sendMap();
 
             scene.addEventHandler(javafx.scene.input.KeyEvent.KEY_PRESSED, new EventHandler<javafx.scene.input.KeyEvent>() {
                 @Override
@@ -271,19 +258,6 @@ public class GUI implements KeyListener {
 
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    public void keyPressed(KeyEvent e){
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
 
     public void positionUpdate(LocalizationPositionUpdateMessage message){
         Platform.runLater(new Runnable() {
@@ -311,7 +285,6 @@ public class GUI implements KeyListener {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                //drivingDirection.setText("DIRECTION: " + message.getDrivingDirection());
                 JSONObject object = new JSONObject();
                 JSONObject data = new JSONObject();
                 object.put("event", "transitionUpdate");

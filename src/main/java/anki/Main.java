@@ -18,11 +18,9 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 
         primaryStage.setTitle("SKULL");
-        //ClassLoader loader = getClass().getClassLoader();
-        //File url = new File(loader.getResource("client.fxml").getFile());
+
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("/client.fxml"));
 
-        //Parent root = FXMLLoader.load(url.toURL());
         Parent root = loader.load();
         Scene scene = new Scene(root, 752, 456);
         scene.setFill(Paint.valueOf("#353b48"));

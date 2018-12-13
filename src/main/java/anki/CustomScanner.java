@@ -82,17 +82,6 @@ public class CustomScanner extends RoadmapScanner {
         vehicle.removeMessageListener(LocalizationTransitionUpdateMessage.class, transUpdate);
         vehicle.removeMessageListener(LocalizationPositionUpdateMessage.class, posUpdate);
 
-
-
-        /*JSONObject object = new JSONObject();
-        JSONObject data = new JSONObject();
-
-        object.put("event", "roadmap");
-        data.put("map", test());
-        object.put("data", data);
-
-        SocketController.getClient().send(object.toString());*/
-
         sendMap();
 
     }
@@ -112,22 +101,12 @@ public class CustomScanner extends RoadmapScanner {
     public JSONObject getTypeList(){
         JSONObject typeList = new JSONObject();
         List<Roadpiece> pieces = super.roadmap.toList();
-        //boolean test = true;
         for(int i = 0; i < pieces.size(); i++){
             typeList.put(String.valueOf(i), pieces.get(i).getType());
             System.out.println(typeList.getString(String.valueOf(i)));
         }
         return typeList;
     }
-
-    /*public JSONObject getIdList(){
-        JSONObject idlist = new JSONObject();
-        List<Roadpiece> pieces = super.roadmap.toList();
-        for(int i = 0; i < pieces.size(); i++){
-            System.out.println(idlist.getString(String.valueOf(i)));
-        }
-        return idlist;
-    }*/
 
 
     public void sendMap(){

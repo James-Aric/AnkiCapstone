@@ -135,10 +135,6 @@ public class User {
         return vehicle.getText();
     }
 
-    public void setMapPosition(){
-        position++;
-    }
-
     public void removeThisPlayer(){
         Platform.runLater(new Runnable() {
             @Override
@@ -157,29 +153,6 @@ public class User {
     }
 
     public void setLabels(Label[] labels){
-        /*Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-               *//* String uName, veh, spee, racePos, lap;
-                uName = username.getText();
-                veh = vehicle.getText();
-                spee = speed.getText();
-                racePos = racePosition.getText();
-                lap = laps.getText();*//*
-
-                *//*username = labels[0];
-                vehicle = labels[1];
-                speed = labels[2];
-                racePosition = labels[3];
-                laps = labels[4];*//*
-*//*
-                username.setText(uName);
-                vehicle.setText(veh);
-                speed.setText(spee);
-                racePosition.setText(racePos);
-                laps.setText(lap);*//*
-            }
-        });*/
         Platform.runLater(new Runnable() {
             @Override
             public void run() {

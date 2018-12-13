@@ -135,13 +135,9 @@ public class ServerController {
 
     public ServerController() {
         users = new User[4];
-        //setLabelArrays();
-        //launchServer();
-
     }
     public void setIP(ActionEvent event) {
         this.address = new InetSocketAddress(ipName.getText(), 5023);
-        //this.address = new InetSocketAddress("pi.cs.oswego.edu", 5023);
         ((Button)event.getSource()).setVisible(false);
         ipName.setVisible(false);
         launchServer();
@@ -184,8 +180,6 @@ public class ServerController {
     }
 
     public void launchServer(){
-        //user1.setText("test");
-        //InetSocketAddress address2 = new InetSocketAddress("localhost", 5023);
         server = new WebSocketServer(address) {
             @Override
             public void onOpen(WebSocket conn, ClientHandshake handshake) {
@@ -213,7 +207,6 @@ public class ServerController {
                     }catch (Exception e){
                         System.out.println("received ready/start message");
                     }
-                    //System.out.println(data.toString());
                     switch (object.getString("event")) {
                         case "connect":
                             addPlayer(data, conn);
@@ -229,8 +222,6 @@ public class ServerController {
                         case "roadmap":
                             if (map == null) {
                                 System.out.println("map received------------------------------------------------");
-                                //map = (Roadmap) data.get("map");
-                                //listMap = map.toList();
                                 map = data.getJSONObject("map");
                                 mapLength = data.getInt("length");
                                 constructIDList(data.getJSONObject("ids"));
@@ -242,20 +233,12 @@ public class ServerController {
                                     }
                                 }
                             }
-                            /*for(int i = 0; i < 4; i++){
-                                if(users[i].getName().equals(data.getString("username"))){
-                                    renderCarLocation(userCars[i], users[i]);
-                                    break;
-                                }
-                            }*/
                             break;
                         case "locationUpdate":
                             currentUser = data.getString("username");
                             System.out.println(data.toString());
                             for (int i = 0; i < 4; i++) {
                                 if (users[i] != null && users[i].getName().equals(currentUser)) {
-                                    //LocalizationPositionUpdateMessage positionMessage = (LocalizationPositionUpdateMessage) data.get("message");
-                                    //u.setPosition(positionMessage.getRoadPieceId());*/
                                     System.out.println("PLAYER: " + data.getString("username") + "   AT POSITION: " + data.get("position"));
                                     setUserData(users[i], data);
                                     break;
@@ -268,7 +251,6 @@ public class ServerController {
                                 for (int i = 0; i < 4; i++) {
                                     if (users[i] != null && data.getString("username").equals(users[i].getName())) {
                                         System.out.println("CAR RENDER IN PROGRESS");
-                                        //users[i].setMapPosition();
                                         users[i].position++;
                                         renderCarLocation(userCars[i], users[i]);
                                         setRacePositions();
@@ -566,7 +548,6 @@ public class ServerController {
             @Override
             public void run() {
                 System.out.println( user.position + "        "  + Math.abs(user.position)%mapLength + "=============================================================================" + mapLength + "     " + mapCoords.length);
-                //System.out.println(user.position + "    " + mapCoords[user.position]);
                 int x = Integer.valueOf(mapCoords[Math.abs(user.position)%mapLength].split(":")[0]);
                 int y = Integer.valueOf(mapCoords[Math.abs(user.position)%mapLength].split(":")[1]);
                 grid.getChildren().remove(vehicle);
@@ -580,11 +561,6 @@ public class ServerController {
     public Integer[][] calculateRacePosition(User users[]){
         Integer indexPlaces[][] = new Integer[4][2];
         for(int i = 0; i < 4; i++){
-            /*if(users[i] != null && users[firstIndex] != null){
-                if(users[i].position > users[firstIndex].position){
-                    firstIndex = i;
-                }
-            }*/
             if(users[i] != null) {
                 indexPlaces[i][0] = users[i].position;
                 indexPlaces[i][1] = i;
@@ -629,6 +605,7 @@ public class ServerController {
                                         break;
                                 }
                                 users[i].setRacePosition(""+pos);
+                                //THIS WAS TO TRY AND CHANGE THE POSITION OF THE USER ON THE SERVER STATS
                                 /*if(Integer.valueOf(users[i].racePosition.getText()) > 0) {
                                     Label temp[] = returnUserData(pos);
                                     users[i] = new User(0, users[i].conn, temp[2], temp[3], temp[1], temp[0], temp[4], users[i].name);

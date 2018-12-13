@@ -55,11 +55,11 @@ task nodeServer(type: NodeTask) {
 }
 
 task client << {
-    javaexec {main='-jar'; args "out/artifacts/AnkiCapstone_jar/AnkiClient.jar"}
+    javaexec {main='-jar'; args "out/artifacts/AnkiClient_jar/AnkiCapstone.jar"}
 }
 
 task server << {
-    javaexec {main='-jar'; args "out/artifacts/AnkiCapstone_jar2/AnkiServer.jar"}
+    javaexec {main='-jar'; args "out/artifacts/AnkiServer_jar/AnkiCapstone.jar"}
 }
 
 
